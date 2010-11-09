@@ -867,3 +867,9 @@ PyMODINIT_FUNC
 initCuTheora(void) {
 	(void) Py_InitModule("CuTheora", CuTheoraMethods);
 	}
+
+/*
+int main(void) {
+  return 0;
+}
+*/
