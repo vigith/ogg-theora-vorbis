@@ -112,7 +112,7 @@ class OggEncode:
 if __name__ == '__main__':
 
 	def test2():
-		ogg = OggEncode(320, 240, 'ik.ogv')
+		ogg = OggEncode(320, 240, 'PyExTheora.ogv')
 		##############################################
 		ogg.flushHeader()
 		ogg.addImages("aaa.jpg",5)
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 		ogg.close()
 	
 	def test1():
-		ogg = OggEncode(320, 240, 'ik.ogv')
+		ogg = OggEncode(320, 240, 'PyExTheora.ogv')
 		##############################################
 		ogg.flushHeader()
 		ogg.addImages("aaa.jpg",500)
