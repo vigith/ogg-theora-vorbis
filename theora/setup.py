@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 # setup.py
 
 from distutils.core import setup, Extension
+import os
 
 ## changed the the library_dirs and include_dirs for MAC
 setup(
@@ -11,10 +14,11 @@ setup(
     author_email="ignatius.kunjumon@gmail.com",
     maintainer="Vigith Maurice <www.vigith.com>",
     maintainer_email="vigith@gmail.com",
+    url="http://www.theora.org/",
     license="GPL",
     ext_modules=[Extension("CuTheora", ["cu_theora.c"],
-                           library_dirs=["/opt/local/lib/" , "/opt/local/include/"],
-                           include_dirs=["/opt/local/lib/" , "/opt/local/include/"],
+                           library_dirs=["/usr/lib/" , "/opt/local/include/"],
+                           include_dirs=["/usr/include/" , "/opt/local/include/"],
                            libraries=['ogg', 'theora', 'theoraenc', 'theoradec'])]
 )
 

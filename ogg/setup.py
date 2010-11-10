@@ -8,9 +8,12 @@ setup(
 	description="Python Ogg Module",
 	author="Ignatius Kunjumon",
 	author_email="ignatius.kunjumon@gmail.com",
-	url="http://ignatius.in/",
+        maintainer="Vigith Maurice <www.vigith.com>",
+        maintainer_email="vigith@gmail.com",
+	url="http://xiph.org/ogg/",
 	license="GPL",
 	ext_modules=[Extension("CuOgg", ["cu_ogg.c"],
-		library_dirs=["/usr/lib"],
+                library_dirs=["/usr/lib/" , "/opt/local/include/"],
+                include_dirs=["/usr/include/" , "/opt/local/include/"],
 		libraries=['ogg'])]
-	)
+)

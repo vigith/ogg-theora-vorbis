@@ -3,14 +3,17 @@
 from distutils.core import setup, Extension
 
 setup(
-	name="CuVorbis",
-	version="0.0.1",
-	description="Python Vorbis Module",
-	author="Ignatius Kunjumon",
-	author_email="ignatius.kunjumon@gmail.com",
-	url="http://ignatius.in/",
-	license="GPL",
-	ext_modules=[Extension("CuVorbis", ["cu_vorbis.c"],
-		library_dirs=["/usr/lib"],
-		libraries=['ogg', 'vorbisenc', 'vorbis'])]
-	)
+    name="CuVorbis",
+    version="0.0.1",
+    description="Python Vorbis Module",
+    author="Ignatius Kunjumon",
+    author_email="ignatius.kunjumon@gmail.com",
+    maintainer="Vigith Maurice <www.vigith.com>",
+    maintainer_email="vigith@gmail.com",
+    url="http://xiph.org/vorbis/",
+    license="GPL",
+    ext_modules=[Extension("CuVorbis", ["cu_vorbis.c"],
+                        library_dirs=["/usr/lib/" , "/opt/local/include/"],
+                        include_dirs=["/usr/include/" , "/opt/local/include/"],
+                        libraries=['ogg', 'vorbisenc', 'vorbis'])]
+)
