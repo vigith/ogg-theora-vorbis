@@ -428,7 +428,9 @@ static PyObject * cutheora_th_encode_flushheader(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", c_out);
 	};
 
-/*
+/* not used, same function is written down. We work only on RGB pics, but 
+ * the library supports now only ycbcr format. the function written below
+ * does the convertion. (both the function names are same)
 static PyObject * cutheora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
 	int c_out;
 	int size2;
