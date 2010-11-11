@@ -6,7 +6,7 @@ from CuOgg import *
 from CuTheora import *
 
 
-class IKOgg:
+class DecodeTheora:
 	def __init__(self, file_name):
 		self.file_name = file_name
 		self.packet = make_ogg_packet()
@@ -23,8 +23,8 @@ class IKOgg:
 		self.ret3 = ogg_stream_init(self.stream, self.slno)
 		self.ret4 = ogg_stream_pagein(self.stream, self.page)
 
-		self.theoraInfo    = make_th_info()
-		self.mComment = make_th_comment()
+		self.theoraInfo = make_th_info()
+		self.mComment   = make_th_comment()
 		th_info_init(self.theoraInfo)
 		th_comment_init(self.mComment)
 		self.setupInfo_addr = 0
@@ -34,8 +34,9 @@ class IKOgg:
 		return w, h
 
 	def readPage(self):
+		# read_page/3 of Ogg Lib uses ogg_sync_pageout internally
+		# ogg_sync_pageout, takes the data stored in the buffer of the ogg_sync_state struct and inserts them into an ogg_page. 
 		self.ret2 = read_page(self.file, self.state, self.page)
-		#print "PAGE :-: ", self.pageNo()
 		return self.ret2
 
 	def isPageBOS(self):
@@ -57,15 +58,27 @@ class IKOgg:
 	def readPacket(self):
 		self.ret5 = ogg_stream_packetout(self.stream, self.packet)
 		while self.ret5 == 0:
+			## readPage is from Ogg Lib (indirectly)
 			if not self.readPage(): 
 				print "PAGE END"
 				return None
+			# ogg_stream_pagein:
+			# http://www.xiph.org/ogg/doc/libogg/ogg_stream_pagein.html
+			# This function adds a complete page to the bitstream.
+			# ret4 == 0 means that the page was successfully submitted to the bitstream.
 			self.ret4 = ogg_stream_pagein(self.stream, self.page)
+			# ogg_stream_packetout:
+			# http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetout.html
+			# This function assembles a data packet for output to the codec decoding engine.
+			# op contains the next packet from the stream (only if ret5 == 1, for 0 and -1 it is not updated)
 			self.ret5 = ogg_stream_packetout(self.stream, self.packet)
 		return self.packet
 
 	def isHeader(self):
-		val = th_packet_isheader(self.packet)  
+		val = th_packet_isheader(self.packet)
+		# Returns:
+		# 1 : The packet is a header packet
+		# 0 : The packet is a video data packet. 
 		return val
 
 	def isKeyFrame(self):
@@ -73,12 +86,31 @@ class IKOgg:
 		return val
 
 	def decodeHeader(self):
+		""" calls th_decode_headerin which Decodes the header packets of a Theora stream.
+		This (th_decode_headerin) should be called on the initial packets of the stream, in succession, until it returns 0 (0 == VIDEO),
+		indicating that all headers have been processed, or an error is encountered.
+		This can be used on the first packet of any logical stream to determine if that stream is a Theora stream. 
+		"""
+		
+		ret = ""
+		
+		# th_decode_headerin(self.theoraInfo, self.mComment, self.setupInfo_addr, self.packet)
+		# self.setupInfo_addr:-
+		# Returns a pointer to additional, private setup information needed by the decoder.
+		# The contents of this pointer must be initialized to NULL on the first call,
+		# and the returned value must continue to be passed in on all subsequent calls.
+		#
+		# setupInfo_addr can be free'd after this using th_decode_free()
+		
 		while self.isHeader():
 			ret, self.setupInfo_addr = th_decode_headerin(self.theoraInfo, 
 					self.mComment, self.setupInfo_addr, self.packet)
+			# val need not be returned, as readPacket() sets the self.packet
 			val = self.readPacket()
 			if not val: return None
-		return
+			return
+
+		# iterate till the first VIDEO is encountered
 		while not ret == 'VIDEO':
 			ret, self.setupInfo_addr = th_decode_headerin(self.theoraInfo, 
 					self.mComment, self.setupInfo_addr, self.packet)
@@ -87,20 +119,49 @@ class IKOgg:
 		return
 
 	def beginVideo(self):
+		# th_decode_alloc(self.theoraInfo, self.setupInfo_addr)
+		# th_decode_alloc, Allocates a decoder instance.
+		# theoraInfo, A th_info struct filled via th_decode_headerin().
+		# setupInfo_addr, A th_setup_info handle returned via th_decode_headerin(). 
 		self.dec = th_decode_alloc(self.theoraInfo, self.setupInfo_addr)
+
+		# th_setup_free(self.setupInfo_addr)
+		# th_setup_free, Releases all storage used for the decoder setup information.
+		# setupInfo_addr is returned by th_decode_headerin()
 		th_setup_free(self.setupInfo_addr)
+
 		self.gpos = 0
 		w, h = self.getSize()
+
+		# creates a python memory 
+		# PyMem_New(unsigned char, sizeof(th_ycbcr_buffer))
 		self.buff = make_yuv_buffer(w*h*2)
-		th_decode_ctl(self.dec, self.buff, w*h*2)
+
+		# th_decode_packetin(self.dec, self.packet, self.gpos)
+		# Submits a packet containing encoded video data to the decoder.
+		# self.dec, A th_dec_ctx handle.
+		# self.packet, An ogg_packet containing encoded video data.
+		# self.gpos, Returns the granule position of the decoded packet.
+		#            (This is computed incrementally from previously decoded packets.)
 		ret, self.gpos = th_decode_packetin(self.dec, self.packet, self.gpos)
+
+		# th_decode_ycbcr_out(self.dec, self.buff)
+		# Outputs the next available frame of decoded Y'CbCr data.
+		# self.dec, A th_dec_ctx handle.
+		# self.buff, A video buffer structure to fill in.
+		#            libtheoradec will fill in all the members of this structure, including the pointers to the uncompressed video data.
+		#            (It may be freed or overwritten without notification when subsequent frames are decoded.)
+		# Returns:
+		# 'ok', 'FAULT' or 'UNKNOWN'
 		val = th_decode_ycbcr_out(self.dec, self.buff)
+		return val 
 
 	def gotoKeyFrame(self):
 		while not self.isKeyFrame():
 			self.readPacket()
 		return
 
+	# the image is in ycbcr format, need to convert it
 	def rgbBuffer(self):
 		self.rgb = get_rgb_buffer(self.buff)
 		return self.rgb
@@ -113,30 +174,36 @@ class IKOgg:
 		return val
 
 	def endVideo(self):
+		# Frees an allocated decoder instance. 
 		th_decode_free(self.dec)
 		return
 
 	def saveImage(self, name = "frame.png"):
 		w,h = self.getSize()
-		img = IKI.fromstring('RGB', [w, h],self.rgb)
+		img = IKI.fromstring('RGB', [w, h], self.rgb)
 		img.save(name)
 
 if __name__ == '__main__':
 
-	def test2():
-		ogg = IKOgg("ik.ogv")
+	def test1():
+		ogg = DecodeTheora("PyExTheora.ogv")
 		ogg.decodeHeader()
-		print ogg.getSize()
+		ogg.getSize()
 		ogg.beginVideo()
-		for i in range(1,2):
+		i = 0
+		while True:
+			i += 1
 			val = ogg.readVideo()
+			print ogg.getSize(), val
 			if val == 'ok':
 				buff = ogg.rgbBuffer()
 				ogg.saveImage("frame%03d.png" % (i))
+			elif val == None:
+				break
 		print get_th_info(ogg.theoraInfo)
 		print_th_comment(ogg.mComment)
 		ogg.endVideo()
 
-	test2()
+	test1()
 
 
