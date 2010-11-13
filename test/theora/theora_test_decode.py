@@ -1,5 +1,5 @@
 import sys
-import Image as IKI
+import Image as IM
 #sys.path.append("/home/ik/ogg/ogg/build/lib.linux-i686-2.6")
 ################################################################
 from CuOgg import *
@@ -72,6 +72,7 @@ class DecodeTheora:
 			# This function assembles a data packet for output to the codec decoding engine.
 			# op contains the next packet from the stream (only if ret5 == 1, for 0 and -1 it is not updated)
 			self.ret5 = ogg_stream_packetout(self.stream, self.packet)
+
 		return self.packet
 
 	def isHeader(self):
@@ -108,12 +109,12 @@ class DecodeTheora:
 			# val need not be returned, as readPacket() sets the self.packet
 			val = self.readPacket()
 			if not val: return None
-			return
 
 		# iterate till the first VIDEO is encountered
 		while not ret == 'VIDEO':
 			ret, self.setupInfo_addr = th_decode_headerin(self.theoraInfo, 
 					self.mComment, self.setupInfo_addr, self.packet)
+
 			if not ret == 'VIDEO':
 				val = self.readPacket()
 		return
@@ -170,7 +171,7 @@ class DecodeTheora:
 		val = self.readPacket()
 		if val == None: return None
 		ret, self.gpos = th_decode_packetin(self.dec, self.packet, self.gpos)
-		val = th_decode_ycbcr_out(self.dec, self.buff)
+		val = th_decode_ycbcr_out(self.dec, self.buff) ## self.buff will have the ycbcr data
 		return val
 
 	def endVideo(self):
@@ -180,7 +181,7 @@ class DecodeTheora:
 
 	def saveImage(self, name = "frame.png"):
 		w,h = self.getSize()
-		img = IKI.fromstring('RGB', [w, h], self.rgb)
+		img = IM.fromstring('RGB', [w, h], self.rgb)
 		img.save(name)
 
 if __name__ == '__main__':
@@ -188,7 +189,6 @@ if __name__ == '__main__':
 	def test1():
 		ogg = DecodeTheora("PyExTheora.ogv")
 		ogg.decodeHeader()
-		ogg.getSize()
 		ogg.beginVideo()
 		i = 0
 		while True:
