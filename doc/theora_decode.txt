@@ -1,0 +1,196 @@
+* This article is based on the theora_test_decode.py *
+
+=================================
+= How to Decode a Theora Packet =
+=================================
+
+ Brief Explanation of Functions
+********************************
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION A, __init__ @@
+@@@@@@@@@@@@@@@@@@@@@@@@@
+
+1. Make a ogg packet (make_ogg_packet())
+ 	This creates a memory object which is equivalent to the size of ogg_packet. 
+	c_out = PyMem_New(unsigned char, sizeof(ogg_packet));
+
+	ogg_packet struct encapsulates the data for a single raw packet of data and is used to transfer data between the ogg framing layer and the handling codec. (http://www.xiph.org/ogg/doc/libogg/ogg_packet.html)
+
+2. Make ogg page (make_ogg_page())
+  	This create space for ogg page memory .
+	c_out = PyMem_New(unsigned char, sizeof(ogg_page));
+
+   	The ogg_page struct encapsulates the data for an Ogg page. Ogg pages are the fundamental unit of framing and interleave in an ogg bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_page.html). 
+
+3. Create ogg stream state (make_ogg_stream_state())
+   	This too create a memory of the size of ogg_stream_state.
+	c_out = PyMem_New(unsigned char, sizeof(ogg_stream_state));
+	
+	The ogg_stream_state struct tracks the current encode/decode state of the current logical bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_state.html)
+
+4. Create ogg sync state (make_ogg_sync_state())
+   	Create a memory equivalent to size of ogg_sync_state.
+	c_out = PyMem_New(unsigned char, sizeof(ogg_sync_state));	  
+
+	The ogg_sync_state struct tracks the synchronization of the current page. It is used during decoding to track the status of data as it is read in, synchronized, verified, and parsed into pages belonging to the various logical bistreams in the current physical bitstream link.  (http://www.xiph.org/ogg/doc/libogg/ogg_sync_state.html)
+
+5. Ogg Sync Init (ogg_sync_init(ogg_sync_state *))
+       This function is used to initialize an ogg_sync_state struct to a known initial value in preparation for manipulation of an Ogg bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_sync_init.html)
+
+6. Read Page (readPage(file, state, page))
+   	reads a page, ie it uses ogg_sync_pageout which takes the data stored in the buffer of the ogg_sync_state struct and inserts them into an ogg_page. readPage calls read_page/3 of ogg python lib.
+
+   	        while(ogg_sync_pageout(state, page) != 1) {
+                char* buffer = ogg_sync_buffer(state, 4096);
+               bytes = read(fd, buffer, 4096);
+                if (bytes == 0) {
+			Py_INCREF(Py_None);
+			return Py_None;
+                }
+                ret = ogg_sync_wrote(state, bytes);
+
+        ogg_sync_pageout returns 1 if the page was synced. (-1 and 0 says, read more). In an actual decoding loop, ogg_sync_pageout (http://www.xiph.org/ogg/doc/libogg/ogg_sync_pageout.html) should be called first to ensure that the buffer is cleared. ogg_sync_buffer(state, 4096) (http://www.xiph.org/ogg/doc/libogg/ogg_sync_buffer.html) provides a properly-sized buffer for writing. read/3 reads from the file-descriptor and writes on to the buffer. 
+The while loop runs till we successfully syncs a page. ogg_sync_wrote(state, bytes) (http://www.xiph.org/ogg/doc/libogg/ogg_sync_wrote.html) is used to tell the ogg_sync_state struct how many bytes we wrote into the buffer.
+
+7. Ogg Page Serial Number (ogg_page_serialno(ogg_page *))
+       returns the serial number for the logical bitstream of this page. 
+       c_out = ogg_page_serialno(og);
+
+       ogg_page_serialno(ogg_page) returns the unique serial number for the logical bitstream of this page. (http://www.xiph.org/ogg/doc/libogg/ogg_page_serialno.html)
+
+8. Ogg Stream Init (ogg_stream_init(ogg_stream_state *, int slno))
+       This function is used to initialize an ogg_stream_state struct and allocates appropriate memory in preparation for encoding or decoding. [Note serial number being passed]
+       c_out = ogg_stream_init(os, serialno);
+
+        (http://www.xiph.org/ogg/doc/libogg/ogg_page_serialno.html)
+
+9. Ogg Stream Pagein (ogg_stream_pagein(ogg_stream_state *, ogg_page *))
+       This function adds a complete page to the bitstream (give the page to the decoding layer)
+       c_out = ogg_stream_pagein(os, og); // The data inside this page (og) is being submitted to the streaming layer in order to be allocated into packets.
+
+      ogg_stream_pagein, In a typical decoding situation, this function would be called after using ogg_sync_pageout to create a valid ogg_page struct. Internally, this function breaks the page into packet segments in preparation for outputting a valid packet to the codec decoding layer (http://www.xiph.org/ogg/doc/libogg/ogg_stream_pagein.html).
+
+      This fails if the serial number of the page did not match the serial number of the bitstream, the page version was incorrect, or an internal error accurred and returns -1.
+
+10. Create th_info(make_th_info())
+       Create a memory space for theora bitstream information. 
+       c_out = PyMem_New(unsigned char, sizeof(th_info));
+
+       This (th_info) contains the basic playback parameters for a stream, and corresponds to the initial 'info' header packet. To initialize an encoder, the application fills in this structure and passes it to th_encode_alloc(). A default encoding mode is chosen based on the values of the quality and target_bitrate fields. On decode, it is filled in by th_decode_headerin(), and then passed to th_decode_alloc(). (http://www.theora.org/doc/libtheora-1.0/structth__info.html)
+
+11. Create (th_comment())
+        create space for th_comment structure and initiallizes few fields.
+        c_out = PyMem_New(unsigned char, sizeof(th_comment));
+
+        (http://www.theora.org/doc/libtheora-1.0/structth__comment.html)
+
+12. Theora Info Init (th_info_init(th_info *))
+    	Initializes a th_info structure. 
+        th_info_init(_info);	 
+
+        This should be called on a freshly allocated th_info structure before attempting to use it.  (http://www.theora.org/doc/libtheora-1.0/group__basefuncs.html)
+
+13. Theora Comment Init (th_comment_init(th_comment *))
+         Initialize a th_comment structure.
+         th_comment_init(_tc);
+
+         This (th_comment_init) should be called on a freshly allocated th_comment structure before attempting to use it. (http://www.theora.org/doc/libtheora-1.0/group__basefuncs.html)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION B, decodeHeader @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+14. Decode Header (decodeHeader())
+    	 iterates till the first VIDEO packet is hit. 
+	 If it is a HEADER and is not valid header, return None. 
+	 If it is anything other than header, keep reading packets (readPacket explained below) the till VIDEO packet comes in. 
+	 th_decode_headerin(th_info *, th_comment *,  th_setup_info **, ogg_packet *)
+
+	 Decodes the "header" packets of a Theora stream. This should be called on the initial packets of the stream, in succession, until it returns 0, indicating that all headers have been processed, or an error is encountered. This can be used on the first packet of any logical stream to determine if that stream is a Theora stream. (http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html).
+
+	 decodeHeader() function sets up the setupInfo_addr, setupInfo_addr (th_setup_info *) is a pointer to additional, private setup information needed by the decoder. The contents of this pointer must be initialized to NULL on the first call, and the returned value must continue to be passed in on all subsequent calls. 
+
+15. Read Packet (readPacket())
+    	 readPacket is implemented by iteratively calling ogg_stream_pagein() and ogg_stream_packetout(). ogg_stream_packetout(ogg_stream_state *, ogg_packet *) (http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetout.html) function assembles a data packet for output to the codec decoding engine. The data has already been submitted to the ogg_stream_state and broken into segments (by ogg_steam_pagein, read #9). Each successive call returns the next complete packet built from those segments. ogg_stream_packetout() returns 1 if a packet was assembled normally. ogg_packet * (in the function param) contains the next packet from the stream.
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION C , beginVideo @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+16. Theora Decode Alloc (th_decode_alloc(th_info *, th_setup_info *))
+    	Allocates a decoder instance and returns the initialized th_dec_ctx handle (NULL is something is wrong)
+	_setup = (th_setup_info *) address;
+	c_out = th_decode_alloc(_info, _setup)
+
+	(http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html)
+
+17. Theora Setup Free (th_setup_free(th_setup_info *))
+    	returns VOID.
+	_setup = (th_setup_info *) address;
+	th_setup_free(_setup);
+
+	th_setup_free, releases all storage used for the decoder setup information. This should be called after you no longer want to create any decoders for a stream whose headers you have parsed with th_decode_headerin(). [this is optional]. (http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html)
+
+18. Make YUV Buffer(make_yuv_buffer())
+    	creates a python memory space for ycbcr buffer
+	PyMem_New(unsigned char, sizeof(th_ycbcr_buffer))
+
+	(http://www.theora.org/doc/libtheora-1.0/codec_8h.html). th_ycbcr_buffer, is a complete image buffer for an uncompressed frame. 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION C , readVideo @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+19. Decode Theora Packetin (th_decode_packetin(th_dec_ctx *, ogg_packet *, ogg_int64_t * _granpos))
+    	Submits a packet containing encoded video data to the decoder.
+	_dec = (th_dec_ctx *) address;	    
+	c_out = th_decode_packetin(_dec, _op, &_granpos);
+	_granpos returns the granule position of the decoded packet. If non-NULL, the granule position for this specific packet is stored in this location. This is computed incrementally from previously decoded packets. (if you do a seek, the correct granule position must be set via TH_DECCTL_SET_GRANPOS for this to work properly.)
+
+	(http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html). If th_decode_packetin returns 0 (success) then a new decoded frame can be retrieved by calling th_decode_ycbcr_out(). 
+
+
+20. Decode YCBCR Out (th_decode_ycbcr_out(th_dec_ctx *, th_ycbcr_buffer))
+    	Outputs the next available frame of decoded Y'CbCr data.
+	th_ycbcr_buffer buffer;
+	_dec = (th_dec_ctx *) address;
+	c_out = th_decode_ycbcr_out(_dec, buffer);
+	memcpy(_ycbcr,buffer,sizeof(buffer));
+
+	(http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html). th_decode_ycbcr_out(th_dec_ctx *, th_ycbcr_buffer _ycbcr), _ycbcr is a video buffer structure to fill in. libtheoradec  will fill in all the members of this structure, including the pointers to the uncompressed video data. The memory for this video data is owned by libtheoradec. It may be freed or overwritten without notification when subsequent frames are decoded.	
+
+	In python code we pass the buffer created by make_yuv_buffer. the _ycbcr has the video data and we copy it to the python buffer using memcpy(...). The _ycbcr buffer is owned by libtheoradec while the other buffer by us.
+
+21. Convert YCbCr to RGB (rgbBuffer())
+    	converts the buffer content to RGB
+    	get_rgb_buffer(self.buff) calls _get_rgb_buffer in the python theora lib which converts the YCbCr data to RGB. (this is a custom function)
+
+22. Save Image (saveImage(name))
+    	saves the RGB data to a file (name) using PIL library.
+
+23. End Video (th_decode_free(th_dec_ctx *))
+    	free up the allocated decode instance
+	_dec = (th_dec_ctx *) address;
+	th_decode_free(_dec);
+	
+	(http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html)
+
+
+PSUEDO CODE
+***********
+
+		ogg = DecodeTheora.__init__("PyExTheora.ogv")
+		ogg.decodeHeader()
+		ogg.beginVideo()
+		i = 0
+		while True:
+			i += 1
+			val = ogg.readVideo()
+			if val == 'ok':
+				buff = ogg.rgbBuffer()
+				ogg.saveImage("frame%03d.png" % (i))
+			elif val == None:
+				break
+		ogg.endVideo()
