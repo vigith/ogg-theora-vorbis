@@ -1,29 +1,29 @@
 import sys
-import Image as IKI
+import Image as IM
 #sys.path.append("/home/ik/ogg/ogg/build/lib.linux-i686-2.6")
 ################################################################
 from CuOgg import *
 from CuTheora import *
 
 
-class OggEncode:
+class EncodeTheora:
 	def __init__(self, width, height, videofile):
 		self.width = width;
 		self.height = height;
-		self.packet = make_ogg_packet()
+		self.ogg_packet = make_ogg_packet()
 		self.page   = make_ogg_page()
 		self.stream = make_ogg_stream_state()
 		self.state  = make_ogg_sync_state()
 		self.ret1 = ogg_sync_init(self.state)
+		ogg_stream_init(self.stream, 12345)  ## serial number can be anything, 12345	     
 		self.th_setupInfo_addr = 0
 		self.theoraInfo = make_th_info()
 		th_info_init(self.theoraInfo)
 		set_th_info(self.theoraInfo, self.width, self.height)
-                self.enc=th_encode_alloc (self.theoraInfo)
 		self.mComment = make_th_comment()
 		th_comment_init(self.mComment)
-		self.ogg_packet = make_ogg_packet()
-		ogg_stream_init(self.stream, 77771)
+		self.enc=th_encode_alloc(self.theoraInfo)
+		## no page is read, so can't use function ogg_page_serialno(ogg_page *)
 		self.fd = open(videofile,"wb")
 		self.packetNo = 0
 		return
@@ -52,14 +52,12 @@ class OggEncode:
 		return no
 
 	def isHeader(self):
-		val = th_packet_isheader(self.packet)  
+		val = th_packet_isheader(self.ogg_packet)  
 		return val
 
 	def isKeyFrame(self):
-		val = th_packet_iskeyframe(self.packet)
+		val = th_packet_iskeyframe(self.ogg_packet)
 		return val
-
-	#######################################################################
 
 	def flushHeader(self):
 		n = 1
@@ -76,7 +74,7 @@ class OggEncode:
 		return
 
 	def savePage(self):
-		n = ogg_stream_pageout(self.stream, self.page)
+		n = ogg_stream_pageout(self.stream, self.page) ## forms packets to pages
 		if n:
 			header = page_header(self.page)
 			body = page_body(self.page)
@@ -86,54 +84,50 @@ class OggEncode:
 
 	def addImageFrame(self, img):
 		img2 = img.resize([self.width, self.height])
-		img3 = img2.convert('RGB')
+		img3 = img2.convert('RGB')  ## you don't have to do this as image is already RGB
 		img4 = img3.tostring()
 		n = th_encode_ycbcr_in(self.enc, img4, self.width, self.height)
 		n = th_encode_packetout(self.enc, 0, self.ogg_packet)
 		n = ogg_stream_packetin(self.stream, self.ogg_packet)
 		self.savePage()
 		self.packetNo += 1
-		print self.packetNo,"\r",
+		print self.packetNo, "\r",
 		sys.stdout.flush()
 		return n
 
 	def readImage(self, filename = "aaa.jpg"):
-		img = IKI.open(filename)
+		img = IM.open(filename)
 		return img
 
 	def addImages(self, filename, no = 1):
 		img = self.readImage(filename)
 		for i in range(no):
 			self.addImageFrame(img)
+			
 	def close(self):
 		self.fd.close()
 		return
 
-if __name__ == '__main__':
+	def endVideo(self):
+		th_encode_free(self.enc)
+		return
 
-	def test2():
-		ogg = OggEncode(320, 240, 'PyExTheora.ogv')
-		##############################################
-		ogg.flushHeader()
-		ogg.addImages("aaa.jpg",5)
-		ogg.addImages("bbb.jpg",5)
-		ogg.addImages("ccc.jpg",5)
-		ogg.flushStream()
-		##############################################
-		ogg.close()
+
+if __name__ == '__main__':
+	FRAMES = 5
 	
-	def test1():
-		ogg = OggEncode(320, 240, 'PyExTheora.ogv')
+	def test():
+		ogg = EncodeTheora(320, 240, 'PyExTheora.ogv')
 		##############################################
 		ogg.flushHeader()
-		ogg.addImages("aaa.jpg",500)
-		ogg.addImages("bbb.jpg",500)
-		ogg.addImages("ccc.jpg",500)
+		ogg.addImages("aaa.jpg",FRAMES)
+		ogg.addImages("bbb.jpg",FRAMES)
+		ogg.addImages("ccc.jpg",FRAMES)
 		ogg.flushStream()
 		##############################################
 		ogg.close()
-		
-	#test1()
-	test2()
+		ogg.endVideo()
+
+	test()
 
 
