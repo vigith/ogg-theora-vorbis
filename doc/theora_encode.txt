@@ -1,0 +1,209 @@
+* This article is based on the theora_test_encode.py *
+
+============================================
+= Purpose: How to Encode a Theora File     =
+= Author : Vigith Maurice <www.vigith.com> =
+============================================
+
+
+PSUEDO CODE
+***********
+
+		ogg = EncodeTheora.__init__(320, 240, 'PyExTheora.ogv')
+
+		ogg.flushHeader()
+		ogg.addImages("aaa.jpg", FRAMES)
+		ogg.addImages("bbb.jpg", FRAMES)
+		ogg.addImages("ccc.jpg", FRAMES)
+		ogg.flushStream()
+		ogg.close()  ## close the theora file
+
+		ogg.endVideo()
+
+
+ Brief Explanation of Functions
+********************************
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION A, __init__ @@
+@@@@@@@@@@@@@@@@@@@@@@@@@
+
+1. Make a ogg packet (make_ogg_packet())
+ 	This creates a memory object which is equivalent to the size of ogg_packet. 
+	c_out = PyMem_New(unsigned char, sizeof(ogg_packet));
+
+	ogg_packet struct encapsulates the data for a single raw packet of data and is used to transfer data between the ogg framing layer and the handling codec. (http://www.xiph.org/ogg/doc/libogg/ogg_packet.html)
+
+2. Make ogg page (make_ogg_page())
+  	This create space for ogg page memory .
+	c_out = PyMem_New(unsigned char, sizeof(ogg_page));
+
+   	The ogg_page struct encapsulates the data for an Ogg page. Ogg pages are the fundamental unit of framing and interleave in an ogg bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_page.html). 
+
+3. Create ogg stream state (make_ogg_stream_state())
+   	This too create a memory of the size of ogg_stream_state.
+	c_out = PyMem_New(unsigned char, sizeof(ogg_stream_state));
+	
+	The ogg_stream_state struct tracks the current encode/decode state of the current logical bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_state.html)
+
+4. Create ogg sync state (make_ogg_sync_state())
+   	Create a memory equivalent to size of ogg_sync_state.
+	c_out = PyMem_New(unsigned char, sizeof(ogg_sync_state));	  
+
+	The ogg_sync_state struct tracks the synchronization of the current page. It is used during decoding to track the status of data as it is read in, synchronized, verified, and parsed into pages belonging to the various logical bistreams in the current physical bitstream link.  (http://www.xiph.org/ogg/doc/libogg/ogg_sync_state.html)
+
+5. Ogg Sync Init (ogg_sync_init(ogg_sync_state *))
+       This function is used to initialize an ogg_sync_state struct to a known initial value in preparation for manipulation of an Ogg bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_sync_init.html)
+
+
+6. Ogg Stream Init (ogg_stream_init(ogg_stream_state *, int slno))
+       This function is used to initialize an ogg_stream_state struct and allocates appropriate memory in preparation for encoding or decoding. [Note serial number being passed]
+       c_out = ogg_stream_init(os, serialno);
+
+        (http://www.xiph.org/ogg/doc/libogg/ogg_page_serialno.html)
+
+7. Create th_info(make_th_info())
+       Create a memory space for theora bitstream information. 
+       c_out = PyMem_New(unsigned char, sizeof(th_info));
+
+       This (th_info) contains the basic playback parameters for a stream, and corresponds to the initial 'info' header packet. To initialize an encoder, the application fills in this structure and passes it to th_encode_alloc(). A default encoding mode is chosen based on the values of the quality and target_bitrate fields. On decode, it is filled in by th_decode_headerin(), and then passed to th_decode_alloc(). (http://www.theora.org/doc/libtheora-1.0/structth__info.html)
+
+8. Theora Info Init (th_info_init(th_info *))
+    	Initializes a th_info structure. 
+        th_info_init(_info);	 
+
+        This should be called on a freshly allocated th_info structure before attempting to use it.  (http://www.theora.org/doc/libtheora-1.0/group__basefuncs.html)
+
+9. Create (th_comment())
+        create space for th_comment structure and initiallizes few fields.
+        c_out = PyMem_New(unsigned char, sizeof(th_comment));
+
+        (http://www.theora.org/doc/libtheora-1.0/structth__comment.html)
+
+10. Set th_info (set_th_info(self.theoraInfo, self.width, self.height))
+   Initiallizes the th_info struct
+   	th_info_init(info);
+	info->frame_width = width;	//The encoded frame width.
+	info->frame_height = height;	//The encoded frame height.
+	info->pic_width = width;	//The displayed picture width.
+	info->pic_height = height;	//The displayed picture height.
+	info->pic_x = 0;		//The X offset of the displayed picture.
+	info->pic_y = 0;		//The Y offset of the displayed picture.
+	info->colorspace = TH_CS_ITU_REC_470M;//The color space.
+	info->pixel_fmt = TH_PF_420;	//The pixel format.
+	info->target_bitrate = 0;	//The target bit-rate in bits per second.
+	info->quality = 32;		//The target quality level 0-63.
+	info->keyframe_granule_shift = 6; //The amount to shift to extract the last 
+	info->aspect_denominator = 1;
+	info->aspect_numerator = 1;
+	info->fps_numerator = 25000;
+	info->fps_denominator = 1000;
+
+   (http://www.theora.org/doc/libtheora-1.0/structth__info.html)
+
+11. Theora Comment Init (th_comment_init(th_comment *))
+         Initialize a th_comment structure.
+         th_comment_init(_tc);
+
+         This (th_comment_init) should be called on a freshly allocated th_comment structure before attempting to use it. (http://www.theora.org/doc/libtheora-1.0/group__basefuncs.html)
+
+12. Theora Encode Alloc (th_encode_alloc(self.theoraInfo))
+    	 Allocates an encoder instance and returns the *initialized* th_enc_ctx handle. 
+	 c_out = th_encode_alloc(_info);
+
+	 (http://www.theora.org/doc/libtheora-1.0/group__encfuncs.html)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION B, flushHeader @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+13. Theora Encode Flush Header(th_encode_flushheader(th_enc_ctx *, th_comment *, ogg_packet *))
+    	Outputs the next header packet. 
+	_enc = (th_enc_ctx *) address;
+	c_out = th_encode_flushheader(_enc, comments, _op);
+
+	Returns a positive value (> 1) indicates that a header packet was successfully produced. 
+	Returns 0 if no packet was produced, and no more header packets remain.
+	else TH_EFAULT if _enc, _comments, or _op was NULL. 
+	
+	th_encode_flushheader(...) should be called repeatedly after encoder initialization until it returns 0 in order to get all of the header packets, in order, before encoding actual video data. (http://www.theora.org/doc/libtheora-1.0/group__encfuncs.html)
+
+14. Ogg Stream Packet In (ogg_stream_packetin(ogg_stream_state *, ogg_packet *))
+       This function submits a packet to the bitstream for page encapsulation. 
+       c_out = ogg_stream_packetin(os, op);
+
+       In a typical encoding situation, this should be used after filling a packet with data. The data in the packet is copied into the internal storage managed by the ogg_stream_state, so the caller is free to alter the contents of op after this call has returned. ogg_page * is pointer to the packet we are putting into the bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetin.html)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION C, savePage @@
+@@@@@@@@@@@@@@@@@@@@@@@@@
+
+15. Save Page(savePage())
+    	 saves a page.
+
+	 This internally called ogg_stream_pageout() which forms the packets into pages (see below) and writes the header and pages into the local video file.
+    	
+16. Ogg Stream Page Out (ogg_stream_pageout(ogg_stream_state *, ogg_page *))
+    	This function forms packets into pages.
+	c_out = ogg_stream_pageout(os, og);
+
+	In a typical encoding situation, this would be called after using ogg_stream_packetin() to submit data packets to the bitstream. Internally, this function assembles the accumulated packet bodies into an Ogg page suitable for writing to a stream. The function is typically called in a loop until there are no more pages ready for output. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_pageout.html).
+
+17. Page Header (page_header(self.page))
+    	returns the page header pointer (and size)
+        PyArg_ParseTuple(args, "s#", &og, &size);
+        return Py_BuildValue("s#", og->header, og->header_len);
+
+	(This function is not from libogg, but a custom made)
+
+18. Page Body (page_body(self.page))
+    	returns the page header pointer (and size)
+        PyArg_ParseTuple(args, "s#", &og, &size);
+        return Py_BuildValue("s#", og->body, og->body_len);
+
+	(This function is not from libogg, but a custom made)
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION D, addImageFrame @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+19. Add Image Frame (addImageFrame(self.img))
+    	adds a image to ogg packet and saves it as a page.
+	
+    	It first resizes the image, coverts to RGB and represents in a string format. This function calls th_encode_ycbcr_in() which converts the RGB image to YCbCr and submits the frame to the encoder. th_encode_packetout() retrieves the encoded video packet and populates the ogg_packet. This ogg_packet is then given for encapsulation by the ogg_stream_packetin(). This frame is later saved by the savePage() routine.
+
+20. Theora Encode YCbCr(th_encode_ycbcr_in(th_enc_thx *, th_ycbcr_buffer))
+    	  Submits an uncompressed frame to the encoder.
+	  /* 
+           * First Convert RGB Image to YCbCr 
+           */
+	  c_out = th_encode_ycbcr_in(_enc, ycbcr);
+
+	  Returns a positive value to indicate that a video data packet was successfully produced and 0 if no packet was produced, and no more encoded video data remains. (http://www.theora.org/doc/libtheora-1.0/group__encfuncs.html)
+
+21. Theora Encode Packetout (th_encode_packetout(th_enc_ctx *, int _last, ogg_packet *))
+    	Retrieves encoded video data packets. 
+	_enc = (th_enc_ctx *) address;
+	c_out = th_encode_packetout(_enc, _last, _op);
+
+	This should be called repeatedly after each frame is submitted to flush any encoded packets, until it returns 0. The encoder will not buffer these packets as subsequent frames are compressed, so a failure to do so will result in lost video data. (_last argument, set this flag to a non-zero value if no more uncompressed frames will be submitted. This ensures that a proper EOS flag is set on the last packet. ogg_packet *, an ogg_packet structure to fill and all of the elements will be set.). 
+
+	Returns a positive value if a video data packet was successfully produced. (http://www.theora.org/doc/libtheora-1.0/group__encfuncs.html)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION E, flushStream @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+22. Ogg Stream Flush Stream (flushStream())
+    	flushes the remaining packets
+	c_out = ogg_stream_flush(os, og);
+	
+    	ogg_stream_flush(ogg_stream_state *, ogg_page *) function checks for remaining packets inside the stream and forces remaining packets into a page, regardless of the size of the page. This should only be used when you want to flush an undersized page from the middle of the stream. Otherwise, ogg_stream_pageout or ogg_stream_pageout_fillshould always be used. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_flush.html)
+
+23. Ogg End Video(th_encode_free(th_enc_ctx *))
+    	frees an allocated encoder instance.
+	_enc = (th_enc_ctx *) _address;
+	th_encode_free(_enc);
+
+	(http://www.theora.org/doc/libtheora-1.0/group__encfuncs.html)
