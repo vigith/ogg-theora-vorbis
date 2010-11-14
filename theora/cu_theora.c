@@ -13,7 +13,7 @@ static PyObject * cutheora_make_th_comment(PyObject *self, PyObject *args) {
 	int size;
 	unsigned char * c_out;
 	th_comment * comments;
-	static char mess[3][20] = { "title=GNUSofts","artist=Kunjumon","album=Koilparampil"};
+	static char mess[3][20] = { "title=Test","artist=Me","album=Test Me"};
 	static int imess[3] = {14,15,18};
 	static char vendor[40] = "Xiph.Org libTheora I 20060526 3 2 0";
 	size = sizeof(th_comment);
@@ -458,10 +458,12 @@ static PyObject * cutheora_th_encode_packetout(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", c_out);
 	};
 
+
 static PyObject * cutheora_th_encode_free(PyObject *self, PyObject *args) {
-	int size1;
+	unsigned int _address;
 	th_enc_ctx * _enc;
-	PyArg_ParseTuple(args, "s#", &_enc, &size1);
+	PyArg_ParseTuple(args, "i", &_address);
+	_enc = (th_enc_ctx *) _address;
 	th_encode_free(_enc);
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -591,7 +593,7 @@ static PyObject * cutheora_width_height(PyObject *self, PyObject *args) {
 	return Py_BuildValue("[i,i]", info->pic_width, info->pic_height);
 	}
 
-static PyObject * IKFuns_rgb(PyObject *self, PyObject *args) {
+static PyObject * _get_rgb_buffer(PyObject *self, PyObject *args) {
         PyObject *res;
         unsigned char *rgb;
         long size, size1, size2, size3;
@@ -854,7 +856,7 @@ static PyMethodDef CuTheoraMethods[] = {
 			"Frees an allocated decoder instance."},
 		{"width_height", cutheora_width_height, METH_VARARGS,
 			"width and height"},
-		{"get_rgb_buffer", IKFuns_rgb, METH_VARARGS, 
+		{"get_rgb_buffer", _get_rgb_buffer, METH_VARARGS, 
 			"return rgb data"},
 		//{"rgb2ycbcr", IKGSTFuns_rgb2ycbcr, METH_VARARGS, 
 		//	"return yCbCr data"},
