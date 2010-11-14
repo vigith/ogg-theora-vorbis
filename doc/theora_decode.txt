@@ -1,8 +1,29 @@
 * This article is based on the theora_test_decode.py *
 
-=================================
-= How to Decode a Theora Packet =
-=================================
+============================================
+= Purpose: How to Decode a Theora File     =
+= Author : Vigith Maurice <www.vigith.com> =
+============================================
+
+
+PSUEDO CODE
+***********
+
+		ogg = DecodeTheora.__init__("PyExTheora.ogv")
+		ogg.decodeHeader()
+		ogg.beginVideo()
+		i = 0
+		while True:
+			i += 1
+			val = ogg.readVideo()
+			if val == 'ok':
+				buff = ogg.rgbBuffer()
+				ogg.saveImage("frame%03d.png" % (i))
+			elif val == None:
+				break
+		ogg.endVideo()
+
+
 
  Brief Explanation of Functions
 ********************************
@@ -112,7 +133,7 @@ The while loop runs till we successfully syncs a page. ogg_sync_wrote(state, byt
 	 decodeHeader() function sets up the setupInfo_addr, setupInfo_addr (th_setup_info *) is a pointer to additional, private setup information needed by the decoder. The contents of this pointer must be initialized to NULL on the first call, and the returned value must continue to be passed in on all subsequent calls. 
 
 15. Read Packet (readPacket())
-    	 readPacket is implemented by iteratively calling ogg_stream_pagein() and ogg_stream_packetout(). ogg_stream_packetout(ogg_stream_state *, ogg_packet *) (http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetout.html) function assembles a data packet for output to the codec decoding engine. The data has already been submitted to the ogg_stream_state and broken into segments (by ogg_steam_pagein, read #9). Each successive call returns the next complete packet built from those segments. ogg_stream_packetout() returns 1 if a packet was assembled normally. ogg_packet * (in the function param) contains the next packet from the stream.
+    	 readPacket is implemented by iteratively calling ogg_stream_pagein() and ogg_stream_packetout(). ogg_stream_packetout(ogg_stream_state *, ogg_packet *) (http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetout.html) function assembles a data packet for output to the codec decoding engine. The data has already been submitted to the ogg_stream_state and broken into segments (by ogg_stream_pagein, read #9). Each successive call returns the next complete packet built from those segments. ogg_stream_packetout() returns 1 if a packet was assembled normally. ogg_packet * (in the function param) contains the next packet from the stream.
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -140,7 +161,7 @@ The while loop runs till we successfully syncs a page. ogg_sync_wrote(state, byt
 	(http://www.theora.org/doc/libtheora-1.0/codec_8h.html). th_ycbcr_buffer, is a complete image buffer for an uncompressed frame. 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@ SECTION C , readVideo @@
+@@ SECTION D , readVideo @@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 19. Decode Theora Packetin (th_decode_packetin(th_dec_ctx *, ogg_packet *, ogg_int64_t * _granpos))
@@ -170,27 +191,13 @@ The while loop runs till we successfully syncs a page. ogg_sync_wrote(state, byt
 22. Save Image (saveImage(name))
     	saves the RGB data to a file (name) using PIL library.
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION E , endVideo @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 23. End Video (th_decode_free(th_dec_ctx *))
     	free up the allocated decode instance
 	_dec = (th_dec_ctx *) address;
 	th_decode_free(_dec);
 	
 	(http://www.theora.org/doc/libtheora-1.0/group__decfuncs.html)
-
-
-PSUEDO CODE
-***********
-
-		ogg = DecodeTheora.__init__("PyExTheora.ogv")
-		ogg.decodeHeader()
-		ogg.beginVideo()
-		i = 0
-		while True:
-			i += 1
-			val = ogg.readVideo()
-			if val == 'ok':
-				buff = ogg.rgbBuffer()
-				ogg.saveImage("frame%03d.png" % (i))
-			elif val == None:
-				break
-		ogg.endVideo()
