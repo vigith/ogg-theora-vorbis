@@ -1,0 +1,200 @@
+* This article is based on the vorbis_test_encode.py *
+
+============================================
+= Purpose: How to Encode a Vorbis File     =
+= Author : Vigith Maurice <www.vigith.com> =
+============================================
+
+
+PSUEDO CODE
+***********
+
+v = EncodeVorbis.__init__('a.wav')
+v.start()
+while v.addWaveFrames(v.noFrames/100):
+	v.savePage()
+v.flushFrames()
+v.fout.close() ## close the local file descriptor
+
+
+ Brief Explanation of Functions
+********************************
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION A , __init__ @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+1. __init__
+	we are pulling each frame from a .wav file and encoding into vorbis format. in the __init__ section we will initiallize quite a few data structure set values for it. This document will talk about only vorbis or ogg and not anything other modules.
+
+2. Make Vorbis Info (make_vorbis_info())
+   	Create the memory space for vorbis_info data structure
+	size = sizeof(vorbis_info);
+	c_out = PyMem_New(unsigned char, size);
+
+	The vorbis_info structure contains basic information about the audio in a vorbis bitstream. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_info.html)
+
+3. Make Vorbis Comment (make_vorbis_comment())
+   	Create memory space for vorbis_comment data structure
+	c_out = PyMem_New(unsigned char, sizeof(vorbis_comment));
+
+	The vorbis_comment structure defines an Ogg Vorbis comment. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_comment.html)
+
+4. Make Vorbis DSP State (make_vorbis_dsp_state())
+   	Create memory space for dsp data structure.
+	c_out = PyMem_New(unsigned char, sizeof(vorbis_dsp_state));
+
+	The vorbis_dsp_state structure is the state for one instance of the Vorbis encoder or decoder. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_dsp_state.html)
+
+5. Make Vorbis Block (make_vorbis_block())
+   	Create space for vorbis block.
+	c_out = PyMem_New(unsigned char, sizeof(vorbis_block));
+
+	The vorbis_block structure holds the data for a single block of audio. One vorbis_block translates to one codec packet. The encoding process consists of splitting the audio into blocks and encoding the blocks into packets; decoding consists of decoding the packets into blocks and reassembling the audio from the blocks. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_block.html)
+
+6.  Make a ogg packet (make_ogg_packet())
+ 	This creates a memory object which is equivalent to the size of ogg_packet. 
+	c_out = PyMem_New(unsigned char, sizeof(ogg_packet));
+
+	ogg_packet struct encapsulates the data for a single raw packet of data and is used to transfer data between the ogg framing layer and the handling codec. (http://www.xiph.org/ogg/doc/libogg/ogg_packet.html)
+
+7.  Create ogg stream state (make_ogg_stream_state())
+   	This too create a memory of the size of ogg_stream_state.
+	c_out = PyMem_New(unsigned char, sizeof(ogg_stream_state));
+	
+	The ogg_stream_state struct tracks the current encode/decode state of the current logical bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_state.html)
+
+8.  Make ogg page (make_ogg_page())
+  	This create space for ogg page memory .
+	c_out = PyMem_New(unsigned char, sizeof(ogg_page));
+
+   	The ogg_page struct encapsulates the data for an Ogg page. Ogg pages are the fundamental unit of framing and interleave in an ogg bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_page.html).
+
+@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION B , start @@
+@@@@@@@@@@@@@@@@@@@@@@@
+
+9. Initiallize Vorbis Info (vorbis_info_init(self.vi))
+   	This function initializes a vorbis_info structure and allocates its internal storage.
+	vorbis_info_init(vi)
+	vorbis_info_init(vorbis_info *)
+
+	(http://www.xiph.org/vorbis/doc/libvorbis/vorbis_info_init.html)
+
+10. Initiallize Vorbis Encode VBR (vorbis_encode_init_vbr(self.vi, self.noChannels, self.frameRate, quality))
+    	Sets up variable bitrate ("quality" based) modes.
+	c_out = vorbis_encode_init_vbr(vorbis_info *, long channels, long rate, float base_quality);
+	
+	This is the primary function within libvorbisenc for setting up variable bitrate ("quality" based) modes. Before this function is called, the vorbis_info struct should be initialized by using vorbis_info_init() from the libvorbis API. After encoding, vorbis_info_clear should be called. (http://www.xiph.org/vorbis/doc/vorbisenc/vorbis_encode_init_vbr.html)
+
+11. Vorbis Encode Setup Init (vorbis_encode_setup_init(self.vi))
+    	performs the last stage of three-step encoding setup
+	c_out = vorbis_encode_setup_init(vorbis_info *);
+
+	This function performs the last stage of three-step encoding setup. vorbis_encode_setup_init() finalizes the highlevel encoding structure into a complete encoding setup after which the application may make no further setup changes.	(http://www.xiph.org/vorbis/doc/vorbisenc/vorbis_encode_setup_init.html)
+
+12. Vorbis Comment Init (vorbis_comment_init(self.vc))
+    	Initializes a vorbis_comment structure for use. After calling this function, the vorbis_comment structure contains no comments.
+	vorbis_comment_init(vorbis_comment *);
+
+	(http://www.xiph.org/vorbis/doc/libvorbis/vorbis_comment_init.html)
+
+13. Vorbis Analysis Init (vorbis_analysis_init(self.vd,self.vi))
+    	allocates and initializes the encoder's analysis state inside a vorbis_dsp_state, based on the configuration in a vorbis_info struct. 
+	c_out = vorbis_analysis_init(vorbis_dsp_state *, vorbis_info *);
+
+	(http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis_init.html)
+
+14. Vorbis Block Init (vorbis_block_init(self.vd,self.vb))
+    	initializes a vorbis_block structure and allocates its internal storage.
+	c_out = vorbis_block_init(vorbis_dsp_state *, vorbis_block *);	
+
+	A vorbis_block is used to represent a particular block of input audio which can be analyzed and coded as a unit. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_block_init.html)
+
+15. Vorbis Analysis Headerout (vorbis_analysis_headerout(self.vd, self.vc, self.header_comm, self.header_code)
+    	This function creates and returns the three header packets needed to configure a decoder to accept compressed data.
+	c_out = vorbis_analysis_headerout(vorbis_dsp_state *, vorbis_comment *, ogg_packet *op, ogg_packet *op_comm, ogg_packet *op_code);
+
+	It should be called after all encoder initialization and configuration is complete. The output packets should be placed in order at the start of the compressed vorbis stream, prior to the first data packet. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis_headerout.html)
+
+16. Ogg Stream Init (ogg_stream_init(ogg_stream_state *, int slno))
+       This function is used to initialize an ogg_stream_state struct and allocates appropriate memory in preparation for encoding or decoding.
+       c_out = ogg_stream_init(os, serialno);
+
+        (http://www.xiph.org/ogg/doc/libogg/ogg_page_serialno.html) 
+
+17. Ogg Stream Packet In (ogg_stream_packetin(ogg_stream_state *, ogg_packet *))
+       This function submits a packet to the bitstream for page encapsulation. 
+       c_out = ogg_stream_packetin(os, op);
+
+       In a typical encoding situation, this should be used after filling a packet with data. The data in the packet is copied into the internal storage managed by the ogg_stream_state, so the caller is free to alter the contents of op after this call has returned. ogg_page * is pointer to the packet we are putting into the bitstream. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_packetin.html) 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION B , savePage @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+18. Ogg Stream Page Out (ogg_stream_pageout(ogg_stream_state *, ogg_page *))
+    	This function forms packets into pages.
+	c_out = ogg_stream_pageout(os, og);
+
+	In a typical encoding situation, this would be called after using ogg_stream_packetin() to submit data packets to the bitstream. Internally, this function assembles the accumulated packet bodies into an Ogg page suitable for writing to a stream. The function is typically called in a loop until there are no more pages ready for output. (http://www.xiph.org/ogg/doc/libogg/ogg_stream_pageout.html).
+
+19. Page Header (page_header(self.page))
+    	returns the page header pointer (and size)
+        PyArg_ParseTuple(args, "s#", &og, &size);
+        return Py_BuildValue("s#", og->header, og->header_len);
+
+	(This function is not from libogg, but a custom made)
+
+20. Page Body (page_body(self.page))
+    	returns the page header pointer (and size)
+        PyArg_ParseTuple(args, "s#", &og, &size);
+        return Py_BuildValue("s#", og->body, og->body_len);
+
+	(This function is not from libogg, but a custom made)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION C , addWaveFrames @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+21. Add Wave Frames (addWaveFrames(no))
+    	Adds the given frame number to the ogg vorbis file. It takes the corresponding frame from the .wav file, encodes it, writes to a page and the page is written to the ogg file in disk.
+
+22. Vorbis Encode Wave Frames (vorbis_encode_wave_frames(self.vd, self.vb, frames, no, self.noChannels)) THIS IS A CUSTOM FUNCTION
+    	This function creates a buffer array for delivering audio to the encoder for compression and will write to that buffer. Later it calls vorbis_analysis_wrote which tells the encoder new data is available for compression.
+        vorbis_buffer=vorbis_analysis_buffer(vd,sampread);
+        /* uninterleave samples */
+        for(i=0;i<sampread;i++){
+            for(j=0;j<audio_ch;j++){
+              vorbis_buffer[j][i]=((readptr[count+1]<<8)|
+                                   (0x00ff&(int)readptr[count]))/32768.f;
+              count+=2;
+            }
+        }
+        c_out = vorbis_analysis_wrote(vd,sampread);    
+    	 
+23. Vorbis Analysis Buffer (vorbis_analysis_buffer(vorbis_dsp_state *, int vals))
+    	This fuction requests a buffer array for delivering audio to the encoder for compression. The general procedure is to call this function with the number of samples you have available. The encoder will arrange for that much internal storage and return an array of buffer pointers, one for each channel of audio. The caller must then write the audio samples into those buffers, as float values, and finally call vorbis_analysis_wrote() to tell the encoder the data is available for analysis. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis_buffer.html). vals is number of samples.
+
+24. Vorbis Analysis Wrote (vorbis_analysis_wrote(vorbis_dsp_state *, int vals))
+    	This function tells the encoder new data is available for compression. Call this after writing new audio into the buffer array returned by vorbis_analysis_buffer(). 'vals' is number of samples successfully written. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis_wrote.html)
+
+25. Vorbis Analysis Blockout (vorbis_analysis_blockout(self.vd, self.vb))
+    	Examines the available uncompressed data and tries to break it into appropriate sized blocks.
+	c_out = vorbis_analysis_blockout(vorbis_dsp_state *, vorbis_block *);	
+
+	It should be called in a loop after adding new data with vorbis_analysis_buffer()/vorbis_analysis_wrote() until it returns zero (need more data) or an negative value (error). (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis_blockout.html)
+
+26. Vorbis Analysis (vorbis_analysis(self.vb,self.audio_pkt))
+    	on each block, this function will apply the corresponding forward transform provided by that encoding mode.
+	c_out = vorbis_analysis(vorbis_block *, ogg_packet *);
+	for basic encoding we can pass ogg_packet, else pass NULL and after the transform has been applied, the block must passed to vorbis_bitrate_addblock() for further coding.
+
+	Once the uncompressed audio data has been divided into blocks, this function (vorbis_analysis) is called on each block. It looks up the encoding mode and dispatches the block to the forward transform provided by that mode. (http://www.xiph.org/vorbis/doc/libvorbis/vorbis_analysis.html)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ SECTION D , flushFrames @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+27. Flush Frames (flushFrames())
+    	The vorbis_analysis_wrote(vorbis_dsp_state *, int vals) is called with 'vals' parameter set to zero to signal the end of the input data. This is now wrote with same logic used in addWaveFrames.
