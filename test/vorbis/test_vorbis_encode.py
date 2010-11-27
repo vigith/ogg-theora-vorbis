@@ -9,15 +9,15 @@ class EncodeVorbis:
 		self.fd         = wave.open(wave_file)
 		self.noChannels = self.fd.getnchannels() # 2 for sterio
 		self.width      = self.fd.getsampwidth() # 2 bytes
-		self.frameRate  = self.fd.getframerate() # 44100
+		self.frameRate  = self.fd.getframerate() # 44100 / 2
 		self.noFrames   = self.fd.getnframes()   # total number of frames
 		self.paramList  = self.fd.getparams() 
-				# (2, 2, 44100, 2752, 'NONE', 'not compressed')
+				# (2, 2, 22050, 48066, 'NONE', 'not compressed')
 
 		self.vi = make_vorbis_info()      # struct that stores all the static vorbis bitstream
-		self.vc = make_vorbis_comment()   # struct that stores all the user comments */
-		self.vd = make_vorbis_dsp_state() # central working state for the packet->PCM decoder */
-		self.vb = make_vorbis_block()     # local working space for packet->PCM decode */
+		self.vc = make_vorbis_comment()   # struct that stores all the user comments 
+		self.vd = make_vorbis_dsp_state() # central working state for the packet->PCM decoder
+		self.vb = make_vorbis_block()     # local working space for packet->PCM decode
 
 		self.header      = make_ogg_packet()
 		self.header_comm = make_ogg_packet()
@@ -26,7 +26,7 @@ class EncodeVorbis:
 
 		self.to = make_ogg_stream_state()
 		self.page        = make_ogg_page()
-		self.fout = open("ik.oga","wb")
+		self.fout = open("PyExVorbis.oga","wb")
 
 
 	def flushFrames(self):
@@ -109,3 +109,5 @@ while v.addWaveFrames(v.noFrames/100):
 print "-"*80
 v.flushFrames()
 v.fout.close()
+
+v.clear() ## wrote the required C equivalent
