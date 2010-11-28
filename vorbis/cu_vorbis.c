@@ -487,7 +487,7 @@ static PyObject * cuvorbis_list_to_wave(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuogg_vorbis_info_clear(PyObject *self, PyObject *args) {
+static PyObject * cuvorbis_vorbis_info_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_info *vi;
   PyArg_ParseTuple(args, "s#", &vi, &size);
@@ -497,7 +497,7 @@ static PyObject * cuogg_vorbis_info_clear(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuogg_vorbis_block_clear(PyObject *self, PyObject *args) {
+static PyObject * cuvorbis_vorbis_block_clear(PyObject *self, PyObject *args) {
   int size;
   int c_out;
   vorbis_block *vb;
@@ -506,7 +506,7 @@ static PyObject * cuogg_vorbis_block_clear(PyObject *self, PyObject *args) {
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuogg_vorbis_dsp_clear(PyObject *self, PyObject *args) {
+static PyObject * cuvorbis_vorbis_dsp_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_dsp_state *v;
   PyArg_ParseTuple(args, "s#", &v, &size);
@@ -516,7 +516,7 @@ static PyObject * cuogg_vorbis_dsp_clear(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuogg_vorbis_comment_clear(PyObject *self, PyObject *args) {
+static PyObject * cuvorbis_vorbis_comment_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_comment *vc;
   PyArg_ParseTuple(args, "s#", &vc, &size);
@@ -583,13 +583,13 @@ static PyMethodDef CuVorbisMethods[] = {
    "Encode int List of List"},
   {"list_to_wave", cuvorbis_list_to_wave, METH_VARARGS,
    "Encode List of List to wave data"},
-  {"vorbis_info_clear", cuogg_vorbis_info_clear, METH_VARARGS,
+  {"vorbis_info_clear", cuvorbis_vorbis_info_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_info structure"},
-  {"vorbis_block_clear", cuogg_vorbis_block_clear, METH_VARARGS,
+  {"vorbis_block_clear", cuvorbis_vorbis_block_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_block structure"},
-  {"vorbis_dsp_clear", cuogg_vorbis_dsp_clear, METH_VARARGS,
+  {"vorbis_dsp_clear", cuvorbis_vorbis_dsp_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_dsp_state structure"},
-  {"vorbis_comment_clear", cuogg_vorbis_comment_clear, METH_VARARGS,
+  {"vorbis_comment_clear", cuvorbis_vorbis_comment_clear, METH_VARARGS,
   "Frees the internal storage associated with a vorbis_comment structure"},
   {NULL, NULL, 0, NULL}
 };
