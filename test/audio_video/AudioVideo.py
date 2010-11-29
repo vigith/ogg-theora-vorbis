@@ -109,7 +109,7 @@ class AudioEncode:
 		self.audio_pkt   = make_ogg_packet()
 
 		self.to = make_ogg_stream_state()
-		self.page        = make_ogg_page()
+		self.page = make_ogg_page()
 		self.fout = fd
 
 
@@ -342,10 +342,11 @@ if __name__ == '__main__':
 		
 	def test1():
 		av = AudioVideo(320, 240, 'ik.ogv')
-		av.addNoAudioImages("aaa.jpg",100)
+#		av.addNoAudioImages("aaa.jpg",100)     # i have to comment no Audio Images to make the sound work
 		av.addAudioImages("bbb.jpg","a.wav")
 		av.addAudioImages("ccc.jpg","wind.wav")
 		av.close()
+		
 	test1()
 
 
