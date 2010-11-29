@@ -1,6 +1,13 @@
 #sys.path.append("/home/ik/ogg/ogg/build/lib.linux-i686-2.6")
 ################################################################
 
+
+# AudioVideo.py :- All the Modules Combined. 		     
+# Another version of this (without any logic change) is
+# audio_video.py which splits the Encode libraries into 2
+# files, AudioEncode.py and VideoEncode.py (you can find
+# those code in the the same folder)
+
 import sys
 import random
 import wave
@@ -341,7 +348,7 @@ if __name__ == '__main__':
 		ogv.close()
 		
 	def test1():
-		av = AudioVideo(320, 240, 'ik.ogv')
+		av = AudioVideo(320, 240, 'PyExAudioVideoTest.ogv')
 #		av.addNoAudioImages("aaa.jpg",100)     # i have to comment no Audio Images to make the sound work
 		av.addAudioImages("bbb.jpg","a.wav")
 		av.addAudioImages("ccc.jpg","wind.wav")
