@@ -1,6 +1,3 @@
-//#include <string.h>
-//#undef _POSIX_C_SOURCE 
-//#undef _XOPEN_SOURCE
 #include <Python.h>
 #include <theora/codec.h>
 #include <theora/theora.h>
@@ -8,7 +5,7 @@
 #include <theora/theoraenc.h>
 #include <ogg/ogg.h>
 
-static PyObject * cutheora_make_th_comment(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_comment(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -33,7 +30,7 @@ static PyObject * cutheora_make_th_comment(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_print_th_comment(PyObject *self, PyObject *args) {
+static PyObject * py_theora_print_th_comment(PyObject *self, PyObject *args) {
         int i, size;
         th_comment * comments;
 	PyArg_ParseTuple(args, "s#", &comments, &size);
@@ -46,7 +43,7 @@ static PyObject * cutheora_print_th_comment(PyObject *self, PyObject *args) {
         };
 
 
-static PyObject * cutheora_make_th_huff_code(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_huff_code(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -62,7 +59,7 @@ static PyObject * cutheora_make_th_huff_code(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_th_img_plane(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_img_plane(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -78,7 +75,7 @@ static PyObject * cutheora_make_th_img_plane(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_th_info(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_info(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -95,7 +92,7 @@ static PyObject * cutheora_make_th_info(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_set_th_info(PyObject *self, PyObject *args) {
+static PyObject * py_theora_set_th_info(PyObject *self, PyObject *args) {
         int size;
 	int width, height;
         th_info * info;
@@ -121,7 +118,7 @@ static PyObject * cutheora_set_th_info(PyObject *self, PyObject *args) {
         };
 
 
-static PyObject * cutheora_get_th_info(PyObject *self, PyObject *args) {
+static PyObject * py_theora_get_th_info(PyObject *self, PyObject *args) {
 	PyObject *res;
         int size;
         th_info * info;
@@ -150,7 +147,7 @@ static PyObject * cutheora_get_th_info(PyObject *self, PyObject *args) {
 
 
 
-static PyObject * cutheora_make_th_quant_info(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_quant_info(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -166,7 +163,7 @@ static PyObject * cutheora_make_th_quant_info(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_th_quant_ranges(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_quant_ranges(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -182,7 +179,7 @@ static PyObject * cutheora_make_th_quant_ranges(PyObject *self, PyObject *args) 
 	return res;
 	};
 
-static PyObject * cutheora_make_th_stripe_callback(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_th_stripe_callback(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -198,7 +195,7 @@ static PyObject * cutheora_make_th_stripe_callback(PyObject *self, PyObject *arg
 	return res;
 	};
 
-static PyObject * cutheora_make_theora_comment(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_theora_comment(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -214,7 +211,7 @@ static PyObject * cutheora_make_theora_comment(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_theora_info(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_theora_info(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -230,7 +227,7 @@ static PyObject * cutheora_make_theora_info(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_theora_state(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_theora_state(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -246,7 +243,7 @@ static PyObject * cutheora_make_theora_state(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_make_yuv_buffer(PyObject *self, PyObject *args) {
+static PyObject * py_theora_make_yuv_buffer(PyObject *self, PyObject *args) {
 	PyObject *res;
 	int size;
 	unsigned char * c_out;
@@ -263,19 +260,19 @@ static PyObject * cutheora_make_yuv_buffer(PyObject *self, PyObject *args) {
 	return res;
 	};
 
-static PyObject * cutheora_th_version_string(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_version_string(PyObject *self, PyObject *args) {
 	const char * c_out;
 	c_out = th_version_string();
 	return Py_BuildValue("s", c_out);
 	};
 
-static PyObject * cutheora_th_version_number(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_version_number(PyObject *self, PyObject *args) {
 	ogg_uint32_t c_out;
 	c_out = th_version_number();
 	return Py_BuildValue("l", c_out);
 	};
 
-static PyObject * cutheora_th_granule_frame(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_granule_frame(PyObject *self, PyObject *args) {
 	ogg_int64_t c_out;
 	int size1;
 	void * _encdec;
@@ -285,7 +282,7 @@ static PyObject * cutheora_th_granule_frame(PyObject *self, PyObject *args) {
 	return Py_BuildValue("l", c_out);
 	};
 
-static PyObject * cutheora_th_granule_time(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_granule_time(PyObject *self, PyObject *args) {
 	double c_out;
 	int size1;
 	void * _encdec;
@@ -295,7 +292,7 @@ static PyObject * cutheora_th_granule_time(PyObject *self, PyObject *args) {
 	return Py_BuildValue("f", c_out);
 	};
 
-static PyObject * cutheora_th_packet_isheader(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_packet_isheader(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	ogg_packet * _op;
@@ -304,7 +301,7 @@ static PyObject * cutheora_th_packet_isheader(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_packet_iskeyframe(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_packet_iskeyframe(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	ogg_packet * _op;
@@ -313,7 +310,7 @@ static PyObject * cutheora_th_packet_iskeyframe(PyObject *self, PyObject *args) 
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_info_init(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_info_init(PyObject *self, PyObject *args) {
 	int size1;
 	th_info * _info;
 	PyArg_ParseTuple(args, "s#", &_info, &size1);
@@ -322,7 +319,7 @@ static PyObject * cutheora_th_info_init(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_info_clear(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_info_clear(PyObject *self, PyObject *args) {
 	int size1;
 	th_info * _info;
 	PyArg_ParseTuple(args, "s#", &_info, &size1);
@@ -331,7 +328,7 @@ static PyObject * cutheora_th_info_clear(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_comment_init(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_init(PyObject *self, PyObject *args) {
 	int size1;
 	th_comment * _tc;
 	PyArg_ParseTuple(args, "s#", &_tc, &size1);
@@ -340,7 +337,7 @@ static PyObject * cutheora_th_comment_init(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_comment_add(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_add(PyObject *self, PyObject *args) {
 	int size1;
 	th_comment * _tc;
 	char * _comment;
@@ -350,7 +347,7 @@ static PyObject * cutheora_th_comment_add(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_comment_add_tag(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_add_tag(PyObject *self, PyObject *args) {
 	int size1;
 	th_comment * _tc;
 	char * _tag;
@@ -361,7 +358,7 @@ static PyObject * cutheora_th_comment_add_tag(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_comment_query(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_query(PyObject *self, PyObject *args) {
 	char * c_out;
 	int size1;
 	th_comment * _tc;
@@ -372,7 +369,7 @@ static PyObject * cutheora_th_comment_query(PyObject *self, PyObject *args) {
 	return Py_BuildValue("s", c_out);
 	};
 
-static PyObject * cutheora_th_comment_query_count(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_query_count(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	th_comment * _tc;
@@ -382,7 +379,7 @@ static PyObject * cutheora_th_comment_query_count(PyObject *self, PyObject *args
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_comment_clear(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_comment_clear(PyObject *self, PyObject *args) {
 	int size1;
 	th_comment * _tc;
 	PyArg_ParseTuple(args, "s#", &_tc, &size1);
@@ -391,7 +388,7 @@ static PyObject * cutheora_th_comment_clear(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_encode_alloc(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_alloc(PyObject *self, PyObject *args) {
 	th_enc_ctx * c_out;
 	int size1;
 	const th_info * _info;
@@ -400,7 +397,7 @@ static PyObject * cutheora_th_encode_alloc(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_encode_ctl(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_ctl(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	int size2;
@@ -414,7 +411,7 @@ static PyObject * cutheora_th_encode_ctl(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_encode_flushheader(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_flushheader(PyObject *self, PyObject *args) {
 	int c_out;
 	int size2;
 	int size3;
@@ -431,7 +428,7 @@ static PyObject * cutheora_th_encode_flushheader(PyObject *self, PyObject *args)
 /* not used, same function is written down. We work only on RGB pics, but 
  * the library supports now only ycbcr format. the function written below
  * does the convertion. (both the function names are same)
-static PyObject * cutheora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
 	int c_out;
 	int size2;
 	th_enc_ctx * _enc;
@@ -445,7 +442,7 @@ static PyObject * cutheora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
 	};
 */
 
-static PyObject * cutheora_th_encode_packetout(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_packetout(PyObject *self, PyObject *args) {
 	int c_out;
 	int size2;
 	th_enc_ctx * _enc;
@@ -459,7 +456,7 @@ static PyObject * cutheora_th_encode_packetout(PyObject *self, PyObject *args) {
 	};
 
 
-static PyObject * cutheora_th_encode_free(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_free(PyObject *self, PyObject *args) {
 	unsigned int _address;
 	th_enc_ctx * _enc;
 	PyArg_ParseTuple(args, "i", &_address);
@@ -469,7 +466,7 @@ static PyObject * cutheora_th_encode_free(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_decode_headerin(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_headerin(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	int size2;
@@ -499,7 +496,7 @@ static PyObject * cutheora_th_decode_headerin(PyObject *self, PyObject *args) {
 		return Py_BuildValue("[s,l]", "UNKNOWN",(unsigned int) _setup);
 	};
 
-static PyObject * cutheora_th_decode_alloc(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_alloc(PyObject *self, PyObject *args) {
 	th_dec_ctx * c_out;
 	int size1;
 	const th_info * _info;
@@ -511,7 +508,7 @@ static PyObject * cutheora_th_decode_alloc(PyObject *self, PyObject *args) {
 	return Py_BuildValue("l", (unsigned int) c_out);
 	};
 
-static PyObject * cutheora_th_setup_free(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_setup_free(PyObject *self, PyObject *args) {
 	th_setup_info * _setup;
 	unsigned int address;
 	PyArg_ParseTuple(args, "i", &address);
@@ -521,7 +518,7 @@ static PyObject * cutheora_th_setup_free(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_th_decode_ctl(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_ctl(PyObject *self, PyObject *args) {
 	int c_out;
 	th_dec_ctx * _dec;
 	int _req;
@@ -534,7 +531,7 @@ static PyObject * cutheora_th_decode_ctl(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", c_out);
 	};
 
-static PyObject * cutheora_th_decode_packetin(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_packetin(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	th_dec_ctx * _dec;
@@ -557,7 +554,7 @@ static PyObject * cutheora_th_decode_packetin(PyObject *self, PyObject *args) {
 	return Py_BuildValue("[s,i]", "UNKNOWN", 0);
 	};
 
-static PyObject * cutheora_th_decode_ycbcr_out(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_ycbcr_out(PyObject *self, PyObject *args) {
 	int c_out;
 	int size1;
 	unsigned int address;
@@ -576,7 +573,7 @@ static PyObject * cutheora_th_decode_ycbcr_out(PyObject *self, PyObject *args) {
                 return Py_BuildValue("s", "UNKNOWN");
 	};
 
-static PyObject * cutheora_th_decode_free(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_decode_free(PyObject *self, PyObject *args) {
 	th_dec_ctx * _dec;
 	unsigned int address;
 	PyArg_ParseTuple(args, "i", &address);
@@ -586,7 +583,7 @@ static PyObject * cutheora_th_decode_free(PyObject *self, PyObject *args) {
 	return Py_None;
 	};
 
-static PyObject * cutheora_width_height(PyObject *self, PyObject *args) {
+static PyObject * py_theora_width_height(PyObject *self, PyObject *args) {
 	int size1;
 	const th_info * info;
 	PyArg_ParseTuple(args, "s#", &info, &size1);
@@ -660,7 +657,7 @@ static PyObject * _get_rgb_buffer(PyObject *self, PyObject *args) {
 
 
 
-static PyObject * cutheora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
+static PyObject * py_theora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
 	int c_out;
 	int size2;
 	th_enc_ctx * _enc;
@@ -775,101 +772,101 @@ static PyObject * cutheora_th_encode_ycbcr_in(PyObject *self, PyObject *args) {
 
 
 
-static PyMethodDef CuTheoraMethods[] = {
-		{"make_th_comment", cutheora_make_th_comment, METH_VARARGS,
+static PyMethodDef PyExTheoraMethods[] = {
+		{"make_th_comment", py_theora_make_th_comment, METH_VARARGS,
 			"The comment information"},
-		{"print_th_comment", cutheora_print_th_comment, METH_VARARGS,
+		{"print_th_comment", py_theora_print_th_comment, METH_VARARGS,
 			"Print the comment information"},
-		{"make_th_huff_code", cutheora_make_th_huff_code, METH_VARARGS,
+		{"make_th_huff_code", py_theora_make_th_huff_code, METH_VARARGS,
 			"A Huffman code for a Theora DCT token"},
-		{"make_th_img_plane", cutheora_make_th_img_plane, METH_VARARGS,
+		{"make_th_img_plane", py_theora_make_th_img_plane, METH_VARARGS,
 			"A buffer for a single color plane in an uncompressed image"},
-		{"make_th_info", cutheora_make_th_info, METH_VARARGS,
+		{"make_th_info", py_theora_make_th_info, METH_VARARGS,
 			"Theora bitstream information"},
-		{"make_th_quant_info", cutheora_make_th_quant_info, METH_VARARGS,
+		{"make_th_quant_info", py_theora_make_th_quant_info, METH_VARARGS,
 			"A complete set of quantization parameters"},
-		{"make_th_quant_ranges", cutheora_make_th_quant_ranges, METH_VARARGS,
+		{"make_th_quant_ranges", py_theora_make_th_quant_ranges, METH_VARARGS,
 			"A set of qi ranges"},
-		{"make_th_stripe_callback", cutheora_make_th_stripe_callback, METH_VARARGS,
+		{"make_th_stripe_callback", py_theora_make_th_stripe_callback, METH_VARARGS,
 			"The striped decode callback data to pass to TH_DECCTL_SET_STRIPE_CB"},
-		{"make_theora_comment", cutheora_make_theora_comment, METH_VARARGS,
+		{"make_theora_comment", py_theora_make_theora_comment, METH_VARARGS,
 			"Comment header metadata"},
-		{"make_theora_info", cutheora_make_theora_info, METH_VARARGS,
+		{"make_theora_info", py_theora_make_theora_info, METH_VARARGS,
 			"Theora bitstream info"},
-		{"make_theora_state", cutheora_make_theora_state, METH_VARARGS,
+		{"make_theora_state", py_theora_make_theora_state, METH_VARARGS,
 			"Codec internal state and context"},
-		{"make_yuv_buffer", cutheora_make_yuv_buffer, METH_VARARGS,
+		{"make_yuv_buffer", py_theora_make_yuv_buffer, METH_VARARGS,
 			"A YUV buffer for passing uncompressed frames to and from the codec "},
-		{"th_version_string", cutheora_th_version_string, METH_VARARGS,
+		{"th_version_string", py_theora_th_version_string, METH_VARARGS,
 			"Retrieves a human-readable string to identify the library vendor and version."},
-		{"th_version_number", cutheora_th_version_number, METH_VARARGS,
+		{"th_version_number", py_theora_th_version_number, METH_VARARGS,
 			"Retrieves the library version number."},
-		{"th_granule_frame", cutheora_th_granule_frame, METH_VARARGS,
+		{"th_granule_frame", py_theora_th_granule_frame, METH_VARARGS,
 			"Converts a granule position to an absolute frame index, starting at 0."},
-		{"th_granule_time", cutheora_th_granule_time, METH_VARARGS,
+		{"th_granule_time", py_theora_th_granule_time, METH_VARARGS,
 			"Converts a granule position to an absolute time in seconds."},
-		{"th_packet_isheader", cutheora_th_packet_isheader, METH_VARARGS,
+		{"th_packet_isheader", py_theora_th_packet_isheader, METH_VARARGS,
 			"Determines whether a Theora packet is a header or not."},
-		{"th_packet_iskeyframe", cutheora_th_packet_iskeyframe, METH_VARARGS,
+		{"th_packet_iskeyframe", py_theora_th_packet_iskeyframe, METH_VARARGS,
 			"Determines whether a theora packet is a key frame or not."},
-		{"th_info_init", cutheora_th_info_init, METH_VARARGS,
+		{"th_info_init", py_theora_th_info_init, METH_VARARGS,
 			"Initializes a th_info structure."},
-		{"th_info_clear", cutheora_th_info_clear, METH_VARARGS,
+		{"th_info_clear", py_theora_th_info_clear, METH_VARARGS,
 			"Clears a th_info structure."},
-		{"th_comment_init", cutheora_th_comment_init, METH_VARARGS,
+		{"th_comment_init", py_theora_th_comment_init, METH_VARARGS,
 			"Initialize a th_comment structure."},
-		{"th_comment_add", cutheora_th_comment_add, METH_VARARGS,
+		{"th_comment_add", py_theora_th_comment_add, METH_VARARGS,
 			"Add a comment to an initialized th_comment structure."},
-		{"th_comment_add_tag", cutheora_th_comment_add_tag, METH_VARARGS,
+		{"th_comment_add_tag", py_theora_th_comment_add_tag, METH_VARARGS,
 			"Add a comment to an initialized th_comment structure."},
-		{"th_comment_query", cutheora_th_comment_query, METH_VARARGS,
+		{"th_comment_query", py_theora_th_comment_query, METH_VARARGS,
 			"Look up a comment value by its tag."},
-		{"th_comment_query_count", cutheora_th_comment_query_count, METH_VARARGS,
+		{"th_comment_query_count", py_theora_th_comment_query_count, METH_VARARGS,
 			"Look up the number of instances of a tag."},
-		{"th_comment_clear", cutheora_th_comment_clear, METH_VARARGS,
+		{"th_comment_clear", py_theora_th_comment_clear, METH_VARARGS,
 			"Clears a th_comment structure."},
-		{"th_encode_alloc", cutheora_th_encode_alloc, METH_VARARGS,
+		{"th_encode_alloc", py_theora_th_encode_alloc, METH_VARARGS,
 			"Allocates an encoder instance."},
-		{"th_encode_ctl", cutheora_th_encode_ctl, METH_VARARGS,
+		{"th_encode_ctl", py_theora_th_encode_ctl, METH_VARARGS,
 			"Encoder control function."},
-		{"th_encode_flushheader", cutheora_th_encode_flushheader, METH_VARARGS,
+		{"th_encode_flushheader", py_theora_th_encode_flushheader, METH_VARARGS,
 			"Outputs the next header packet."},
-		{"th_encode_ycbcr_in", cutheora_th_encode_ycbcr_in, METH_VARARGS,
+		{"th_encode_ycbcr_in", py_theora_th_encode_ycbcr_in, METH_VARARGS,
 			"Submits an uncompressed frame to the encoder."},
-		{"th_encode_packetout", cutheora_th_encode_packetout, METH_VARARGS,
+		{"th_encode_packetout", py_theora_th_encode_packetout, METH_VARARGS,
 			"Retrieves encoded video data packets."},
-		{"th_encode_free", cutheora_th_encode_free, METH_VARARGS,
+		{"th_encode_free", py_theora_th_encode_free, METH_VARARGS,
 			"Frees an allocated encoder instance."},
-		{"th_decode_headerin", cutheora_th_decode_headerin, METH_VARARGS,
+		{"th_decode_headerin", py_theora_th_decode_headerin, METH_VARARGS,
 			"Decodes the header packets of a Theora stream."},
-		{"th_decode_alloc", cutheora_th_decode_alloc, METH_VARARGS,
+		{"th_decode_alloc", py_theora_th_decode_alloc, METH_VARARGS,
 			"Allocates a decoder instance."},
-		{"th_setup_free", cutheora_th_setup_free, METH_VARARGS,
+		{"th_setup_free", py_theora_th_setup_free, METH_VARARGS,
 			"Releases all storage used for the decoder setup information."},
-		{"th_decode_ctl", cutheora_th_decode_ctl, METH_VARARGS,
+		{"th_decode_ctl", py_theora_th_decode_ctl, METH_VARARGS,
 			"Decoder control function."},
-		{"th_decode_packetin", cutheora_th_decode_packetin, METH_VARARGS,
+		{"th_decode_packetin", py_theora_th_decode_packetin, METH_VARARGS,
 			"Submits a packet containing encoded video data to the decoder."},
-		{"th_decode_ycbcr_out", cutheora_th_decode_ycbcr_out, METH_VARARGS,
+		{"th_decode_ycbcr_out", py_theora_th_decode_ycbcr_out, METH_VARARGS,
 			"Outputs the next available frame of decoded YCbCr data."},
-		{"th_decode_free", cutheora_th_decode_free, METH_VARARGS,
+		{"th_decode_free", py_theora_th_decode_free, METH_VARARGS,
 			"Frees an allocated decoder instance."},
-		{"width_height", cutheora_width_height, METH_VARARGS,
+		{"width_height", py_theora_width_height, METH_VARARGS,
 			"width and height"},
 		{"get_rgb_buffer", _get_rgb_buffer, METH_VARARGS, 
 			"return rgb data"},
 		//{"rgb2ycbcr", IKGSTFuns_rgb2ycbcr, METH_VARARGS, 
 		//	"return yCbCr data"},
-		{"set_th_info", cutheora_set_th_info, METH_VARARGS,
+		{"set_th_info", py_theora_set_th_info, METH_VARARGS,
 			"Set Theora bitstream information Width and Height"},
-		{"get_th_info", cutheora_get_th_info, METH_VARARGS,
+		{"get_th_info", py_theora_get_th_info, METH_VARARGS,
 			"Get Theora bitstream information"},
 		{NULL, NULL, 0, NULL}
 	};
 
 PyMODINIT_FUNC
-initCuTheora(void) {
-	(void) Py_InitModule("CuTheora", CuTheoraMethods);
+initPyExTheora(void) {
+	(void) Py_InitModule("PyExTheora", PyExTheoraMethods);
 	}
 
 /*
