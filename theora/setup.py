@@ -7,7 +7,7 @@ import os
 
 ## changed the the library_dirs and include_dirs for MAC
 setup(
-    name="CuTheora",
+    name="PyExTheora",
     version="0.0.1",
     description="Python Theora Module",
     author="Ignatius Kunjumon",
@@ -16,11 +16,11 @@ setup(
     maintainer_email="vigith@gmail.com",
     url="http://www.theora.org/",
     license="GPL",
-    ext_modules=[Extension("CuTheora", ["cu_theora.c"],
+    ext_modules=[Extension("PyExTheora", ["pyEx_theora.c"],
                            library_dirs=["/usr/lib/" , "/opt/local/include/"],
                            include_dirs=["/usr/include/" , "/opt/local/include/"],
                            libraries=['ogg', 'theora', 'theoraenc', 'theoradec'])]
 )
 
 ## compiling
-## gcc -I /opt/local/include/ -I /opt/local/include/python2.4/ -L /opt/local/lib/libtheora.dylib -L /opt/local/lib/libpython2.4.dylib cu_theora.c
+## gcc -I /opt/local/include/ -I /opt/local/include/python2.4/ -L /opt/local/lib/libtheora.dylib -L /opt/local/lib/libpython2.4.dylib pyEx_theora.c
