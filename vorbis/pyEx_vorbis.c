@@ -3,7 +3,7 @@
 #include <vorbis/vorbisenc.h>
 #include <ogg/ogg.h>
 
-static PyObject * cuvorbis_make_vorbis_info(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_make_vorbis_info(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
   unsigned char * c_out;
@@ -20,7 +20,7 @@ static PyObject * cuvorbis_make_vorbis_info(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_make_vorbis_block(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_make_vorbis_block(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
   unsigned char * c_out;
@@ -37,7 +37,7 @@ static PyObject * cuvorbis_make_vorbis_block(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_make_vorbis_dsp_state(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_make_vorbis_dsp_state(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
   unsigned char * c_out;
@@ -54,7 +54,7 @@ static PyObject * cuvorbis_make_vorbis_dsp_state(PyObject *self, PyObject *args)
   return res;
 };
 
-static PyObject * cuvorbis_make_vorbis_comment(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_make_vorbis_comment(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
   unsigned char * c_out;
@@ -70,7 +70,7 @@ static PyObject * cuvorbis_make_vorbis_comment(PyObject *self, PyObject *args) {
   return res;
 };
 
-static PyObject * cuvorbis_vorbis_encode_ctl(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_ctl(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -83,7 +83,7 @@ static PyObject * cuvorbis_vorbis_encode_ctl(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_vorbis_info_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_info_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_info * vi;
@@ -94,7 +94,7 @@ static PyObject * cuvorbis_vorbis_info_init(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_vorbis_comment_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_comment_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_comment * vc;
@@ -106,7 +106,7 @@ static PyObject * cuvorbis_vorbis_comment_init(PyObject *self, PyObject *args) {
 
 
 
-static PyObject * cuvorbis_vorbis_encode_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_info * vi;
@@ -120,7 +120,7 @@ static PyObject * cuvorbis_vorbis_encode_init(PyObject *self, PyObject *args) {
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_encode_init_vbr(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_init_vbr(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_info * vi;
@@ -132,7 +132,7 @@ static PyObject * cuvorbis_vorbis_encode_init_vbr(PyObject *self, PyObject *args
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_encode_setup_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_setup_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_info * vi;
@@ -142,7 +142,7 @@ static PyObject * cuvorbis_vorbis_encode_setup_init(PyObject *self, PyObject *ar
 };
 
 
-static PyObject * cuvorbis_vorbis_analysis_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -153,7 +153,7 @@ static PyObject * cuvorbis_vorbis_analysis_init(PyObject *self, PyObject *args) 
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_block_init(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_block_init(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -164,7 +164,7 @@ static PyObject * cuvorbis_vorbis_block_init(PyObject *self, PyObject *args) {
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_analysis_headerout(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis_headerout(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -181,7 +181,7 @@ static PyObject * cuvorbis_vorbis_analysis_headerout(PyObject *self, PyObject *a
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_analysis_buffer(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis_buffer(PyObject *self, PyObject *args) {
   float ** c_out;
   int size1;
   vorbis_dsp_state * v;
@@ -191,7 +191,7 @@ static PyObject * cuvorbis_vorbis_analysis_buffer(PyObject *self, PyObject *args
   return Py_BuildValue("s#", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_analysis_wrote(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis_wrote(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_dsp_state * v;
@@ -201,7 +201,7 @@ static PyObject * cuvorbis_vorbis_analysis_wrote(PyObject *self, PyObject *args)
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_analysis_blockout(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis_blockout(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -221,7 +221,7 @@ static PyObject * cuvorbis_vorbis_analysis_blockout(PyObject *self, PyObject *ar
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_analysis(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_analysis(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -232,7 +232,7 @@ static PyObject * cuvorbis_vorbis_analysis(PyObject *self, PyObject *args) {
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_bitrate_addblock(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_bitrate_addblock(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   vorbis_block * vb;
@@ -241,7 +241,7 @@ static PyObject * cuvorbis_vorbis_bitrate_addblock(PyObject *self, PyObject *arg
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_bitrate_flushpacket(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_bitrate_flushpacket(PyObject *self, PyObject *args) {
   int c_out;
   int size1;
   int size2;
@@ -255,7 +255,7 @@ static PyObject * cuvorbis_vorbis_bitrate_flushpacket(PyObject *self, PyObject *
 
 
 
-static PyObject * cuvorbis_vorbis_encode_nosound(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_nosound(PyObject *self, PyObject *args) {
   int i, j, c_out;
   int size1;
   int size2;
@@ -284,7 +284,7 @@ static PyObject * cuvorbis_vorbis_encode_nosound(PyObject *self, PyObject *args)
 
 
 
-static PyObject * cuvorbis_vorbis_encode_wave_frames(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_wave_frames(PyObject *self, PyObject *args) {
   int i, j, c_out;
   int size1;
   int size2;
@@ -318,7 +318,7 @@ static PyObject * cuvorbis_vorbis_encode_wave_frames(PyObject *self, PyObject *a
 
 
 
-static PyObject * cuvorbis_wave_frames_to_float(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_wave_frames_to_float(PyObject *self, PyObject *args) {
   int i, j;
   int size;
   signed char *readptr;
@@ -345,7 +345,7 @@ static PyObject * cuvorbis_wave_frames_to_float(PyObject *self, PyObject *args) 
 };
 
 
-static PyObject * cuvorbis_wave_frames_to_int(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_wave_frames_to_int(PyObject *self, PyObject *args) {
   int i, j;
   int size;
   signed char *readptr;
@@ -373,7 +373,7 @@ static PyObject * cuvorbis_wave_frames_to_int(PyObject *self, PyObject *args) {
 
 
 
-static PyObject * cuvorbis_vorbis_encode_int_values(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_int_values(PyObject *self, PyObject *args) {
   int i, j, c_out;
   int size1;
   int size2;
@@ -411,7 +411,7 @@ static PyObject * cuvorbis_vorbis_encode_int_values(PyObject *self, PyObject *ar
 
 
 
-static PyObject * cuvorbis_vorbis_encode_float_values(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_encode_float_values(PyObject *self, PyObject *args) {
   int i, j, c_out;
   int size1;
   int size2;
@@ -449,7 +449,7 @@ static PyObject * cuvorbis_vorbis_encode_float_values(PyObject *self, PyObject *
 
 
 
-static PyObject * cuvorbis_list_to_wave(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_list_to_wave(PyObject *self, PyObject *args) {
   int i, j;
   int size;
   PyObject *list;
@@ -487,7 +487,7 @@ static PyObject * cuvorbis_list_to_wave(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_vorbis_info_clear(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_info_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_info *vi;
   PyArg_ParseTuple(args, "s#", &vi, &size);
@@ -497,7 +497,7 @@ static PyObject * cuvorbis_vorbis_info_clear(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_vorbis_block_clear(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_block_clear(PyObject *self, PyObject *args) {
   int size;
   int c_out;
   vorbis_block *vb;
@@ -506,7 +506,7 @@ static PyObject * cuvorbis_vorbis_block_clear(PyObject *self, PyObject *args) {
   return Py_BuildValue("i", c_out);
 };
 
-static PyObject * cuvorbis_vorbis_dsp_clear(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_dsp_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_dsp_state *v;
   PyArg_ParseTuple(args, "s#", &v, &size);
@@ -516,7 +516,7 @@ static PyObject * cuvorbis_vorbis_dsp_clear(PyObject *self, PyObject *args) {
 };
 
 
-static PyObject * cuvorbis_vorbis_comment_clear(PyObject *self, PyObject *args) {
+static PyObject * py_vorbis_vorbis_comment_clear(PyObject *self, PyObject *args) {
   int size;
   vorbis_comment *vc;
   PyArg_ParseTuple(args, "s#", &vc, &size);
@@ -526,75 +526,75 @@ static PyObject * cuvorbis_vorbis_comment_clear(PyObject *self, PyObject *args) 
 };
 
 
-static PyMethodDef CuVorbisMethods[] = {
-  {"make_vorbis_info", cuvorbis_make_vorbis_info, METH_VARARGS,
+static PyMethodDef PyVorbisMethods[] = {
+  {"make_vorbis_info", py_vorbis_make_vorbis_info, METH_VARARGS,
    "Information about a vorbis bitstream."},
-  {"make_vorbis_comment", cuvorbis_make_vorbis_comment, METH_VARARGS,
+  {"make_vorbis_comment", py_vorbis_make_vorbis_comment, METH_VARARGS,
    "vorbis comment"},
-  {"make_vorbis_dsp_state", cuvorbis_make_vorbis_dsp_state, METH_VARARGS,
+  {"make_vorbis_dsp_state", py_vorbis_make_vorbis_dsp_state, METH_VARARGS,
    "dsp state"},
-  {"make_vorbis_block", cuvorbis_make_vorbis_block, METH_VARARGS,
+  {"make_vorbis_block", py_vorbis_make_vorbis_block, METH_VARARGS,
    "vorbis_block"},
-  {"vorbis_encode_ctl", cuvorbis_vorbis_encode_ctl, METH_VARARGS,
+  {"vorbis_encode_ctl", py_vorbis_vorbis_encode_ctl, METH_VARARGS,
    "This function implements a generic interface to miscellaneous settings similar to the clasasic UNIX ioctl() system call. may use vorbis_encode_ctl() to query or set bitrate management or mode details by using one of several request arguments detailed Vorbis_encode_ctl() must be called after one of or vorbis_encode_setup_vbr(). When used to modify settings,"},
-  {"vorbis_info_init", cuvorbis_vorbis_info_init, METH_VARARGS,
+  {"vorbis_info_init", py_vorbis_vorbis_info_init, METH_VARARGS,
    "Info init"},
-  {"vorbis_comment_init", cuvorbis_vorbis_comment_init, METH_VARARGS,
+  {"vorbis_comment_init", py_vorbis_vorbis_comment_init, METH_VARARGS,
    "Vorbis comment init"},
-  {"vorbis_encode_init", cuvorbis_vorbis_encode_init, METH_VARARGS,
+  {"vorbis_encode_init", py_vorbis_vorbis_encode_init, METH_VARARGS,
    "This is the primary function within libvorbisenc for setting up"},
-  {"vorbis_encode_init_vbr", cuvorbis_vorbis_encode_init_vbr, METH_VARARGS,
+  {"vorbis_encode_init_vbr", py_vorbis_vorbis_encode_init_vbr, METH_VARARGS,
    "This is the primary function within libvorbisenc for setting up"},
-  {"vorbis_encode_setup_init", cuvorbis_vorbis_encode_setup_init, METH_VARARGS,
+  {"vorbis_encode_setup_init", py_vorbis_vorbis_encode_setup_init, METH_VARARGS,
    "This function performs the last stage of three-step encoding setup,"},
-  {"vorbis_encode_init", cuvorbis_vorbis_encode_init, METH_VARARGS,
+  {"vorbis_encode_init", py_vorbis_vorbis_encode_init, METH_VARARGS,
    "This function performs step-one of a three-step bitrate-managed setup. It functions similarly to the one-step setup performed by but allows an application to make further encode setup tweaks using before finally calling vorbis_encode_setup_init() to complete the"},
-  {"vorbis_encode_init_vbr", cuvorbis_vorbis_encode_init_vbr, METH_VARARGS,
+  {"vorbis_encode_init_vbr", py_vorbis_vorbis_encode_init_vbr, METH_VARARGS,
    "This function performs step-one of a three-step variable bitrate encode setup. It functions similarly to the one-step setup performed vorbis_encode_init_vbr() but allows an application to make further setup tweaks using vorbis_encode_ctl() before finally calling"},
-  {"vorbis_analysis_init", cuvorbis_vorbis_analysis_init, METH_VARARGS,
+  {"vorbis_analysis_init", py_vorbis_vorbis_analysis_init, METH_VARARGS,
    "This function allocates and initializes the encoder's analysis inside a is vorbis_dsp_state, based on the configuration in a"},
-  {"vorbis_block_init", cuvorbis_vorbis_block_init, METH_VARARGS,
+  {"vorbis_block_init", py_vorbis_vorbis_block_init, METH_VARARGS,
    "This function initializes a vorbis_block structure and allocates internal storage. A vorbis_block is used to represent a particular"},
-  {"vorbis_analysis_headerout", cuvorbis_vorbis_analysis_headerout, METH_VARARGS,
+  {"vorbis_analysis_headerout", py_vorbis_vorbis_analysis_headerout, METH_VARARGS,
    "This function creates and returns the three header packets needed to a decoder to accept compressed data. I should be called after all initialization and configuration is complete. The output packets be placed in order at the start of the compressed vorbis stream, prior"},
-  {"vorbis_analysis_buffer", cuvorbis_vorbis_analysis_buffer, METH_VARARGS,
+  {"vorbis_analysis_buffer", py_vorbis_vorbis_analysis_buffer, METH_VARARGS,
    "This fuction requests a buffer array for delivering audio to the"},
-  {"vorbis_analysis_wrote", cuvorbis_vorbis_analysis_wrote, METH_VARARGS,
+  {"vorbis_analysis_wrote", py_vorbis_vorbis_analysis_wrote, METH_VARARGS,
    "This function tells the encoder new data is available for Call this after writing new audio into the buffer array returned by"},
-  {"vorbis_analysis_blockout", cuvorbis_vorbis_analysis_blockout, METH_VARARGS,
+  {"vorbis_analysis_blockout", py_vorbis_vorbis_analysis_blockout, METH_VARARGS,
    "This fuction examines the available uncompressed data and tries to it into appropriate sized blocks. It should be called in a loop after new data with vorbis_analysis_buffer()/vorbis_analysis_wrote()"},
-  {"vorbis_analysis", cuvorbis_vorbis_analysis, METH_VARARGS,
+  {"vorbis_analysis", py_vorbis_vorbis_analysis, METH_VARARGS,
    "Once the uncompressed audio data has been divided into blocks, this is called on each block. It looks up the encoding mode and dispatches"},
-  {"vorbis_bitrate_addblock", cuvorbis_vorbis_bitrate_addblock, METH_VARARGS,
+  {"vorbis_bitrate_addblock", py_vorbis_vorbis_bitrate_addblock, METH_VARARGS,
    "This fuction submits a transformed block to the bitrate management for final encoding. Packets are buffered and the packet boundaries"},
-  {"vorbis_bitrate_flushpacket", cuvorbis_vorbis_bitrate_flushpacket, METH_VARARGS,
+  {"vorbis_bitrate_flushpacket", py_vorbis_vorbis_bitrate_flushpacket, METH_VARARGS,
    "This function returns the next available completed packet from the management engine. It should be called in a loop after any call to until it returns either 0 (more data needed) or a negative value"},
-  {"vorbis_encode_nosound", cuvorbis_vorbis_encode_nosound, METH_VARARGS,
+  {"vorbis_encode_nosound", py_vorbis_vorbis_encode_nosound, METH_VARARGS,
    "No Sound"},
-  {"vorbis_encode_wave_frames", cuvorbis_vorbis_encode_wave_frames, METH_VARARGS,
+  {"vorbis_encode_wave_frames", py_vorbis_vorbis_encode_wave_frames, METH_VARARGS,
    "Encode wave frames"},
-  {"wave_frames_to_float", cuvorbis_wave_frames_to_float, METH_VARARGS,
+  {"wave_frames_to_float", py_vorbis_wave_frames_to_float, METH_VARARGS,
    "Wave frames to float List of List"},
-  {"wave_frames_to_int", cuvorbis_wave_frames_to_int, METH_VARARGS,
+  {"wave_frames_to_int", py_vorbis_wave_frames_to_int, METH_VARARGS,
    "Wave frames to int List of List"},
-  {"vorbis_encode_float_values", cuvorbis_vorbis_encode_float_values, METH_VARARGS,
+  {"vorbis_encode_float_values", py_vorbis_vorbis_encode_float_values, METH_VARARGS,
    "Encode float List of List"},
-  {"vorbis_encode_int_values", cuvorbis_vorbis_encode_int_values, METH_VARARGS,
+  {"vorbis_encode_int_values", py_vorbis_vorbis_encode_int_values, METH_VARARGS,
    "Encode int List of List"},
-  {"list_to_wave", cuvorbis_list_to_wave, METH_VARARGS,
+  {"list_to_wave", py_vorbis_list_to_wave, METH_VARARGS,
    "Encode List of List to wave data"},
-  {"vorbis_info_clear", cuvorbis_vorbis_info_clear, METH_VARARGS,
+  {"vorbis_info_clear", py_vorbis_vorbis_info_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_info structure"},
-  {"vorbis_block_clear", cuvorbis_vorbis_block_clear, METH_VARARGS,
+  {"vorbis_block_clear", py_vorbis_vorbis_block_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_block structure"},
-  {"vorbis_dsp_clear", cuvorbis_vorbis_dsp_clear, METH_VARARGS,
+  {"vorbis_dsp_clear", py_vorbis_vorbis_dsp_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_dsp_state structure"},
-  {"vorbis_comment_clear", cuvorbis_vorbis_comment_clear, METH_VARARGS,
+  {"vorbis_comment_clear", py_vorbis_vorbis_comment_clear, METH_VARARGS,
   "Frees the internal storage associated with a vorbis_comment structure"},
   {NULL, NULL, 0, NULL}
 };
 
 PyMODINIT_FUNC
-initCuVorbis(void) {
-  (void) Py_InitModule("CuVorbis", CuVorbisMethods);
+initPyExVorbis(void) {
+  (void) Py_InitModule("PyExVorbis", PyVorbisMethods);
 }
