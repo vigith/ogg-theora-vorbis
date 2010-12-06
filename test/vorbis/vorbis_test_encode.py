@@ -1,5 +1,5 @@
-from CuOgg import *
-from CuVorbis import *
+from PyExOgg import *
+from PyExVorbis import *
 import wave
 import random
 
