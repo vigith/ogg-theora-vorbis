@@ -10,7 +10,6 @@ static PyObject * py_vorbis_make_vorbis_info(PyObject *self, PyObject *args) {
   size = sizeof(vorbis_info);
   c_out = PyMem_New(unsigned char, size);
   if (c_out == NULL) {
-    printf("ERROR Not Enough Memory\n");
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -27,7 +26,6 @@ static PyObject * py_vorbis_make_vorbis_block(PyObject *self, PyObject *args) {
   size = sizeof(vorbis_block);
   c_out = PyMem_New(unsigned char, size);
   if (c_out == NULL) {
-    printf("ERROR Not Enough Memory\n");
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -45,7 +43,6 @@ static PyObject * py_vorbis_make_vorbis_dsp_state(PyObject *self, PyObject *args
 
   c_out = PyMem_New(unsigned char, size);
   if (c_out == NULL) {
-    printf("ERROR Not Enough Memory\n");
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -61,7 +58,6 @@ static PyObject * py_vorbis_make_vorbis_comment(PyObject *self, PyObject *args) 
   size = sizeof(vorbis_comment);
   c_out = PyMem_New(unsigned char, size);
   if (c_out == NULL) {
-    printf("ERROR Not Enough Memory\n");
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -210,6 +206,7 @@ static PyObject * py_vorbis_vorbis_analysis_blockout(PyObject *self, PyObject *a
   PyArg_ParseTuple(args, "s#s#", &v, &size1, &vb, &size2);
   c_out = vorbis_analysis_blockout(v, vb);
 
+  // DEBUG
   //if (c_out == OV_EINVAL) printf("Invalid parameters.\n");
   //else if (c_out == OV_EFAULT) printf("Internal fault; indicates a bug or memory corruption.\n");
   //else if (c_out == OV_EIMPL)  printf("Unimplemented; not supported by this version of the library.\n");
@@ -268,7 +265,7 @@ static PyObject * py_vorbis_vorbis_encode_nosound(PyObject *self, PyObject *args
   PyArg_ParseTuple(args, "s#s#ii", &vd, &size1, 
 		   &vb, &size2, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   vorbis_buffer=vorbis_analysis_buffer(vd,sampread);
   /* uninterleave samples */
   for(i=0;i<sampread;i++){
@@ -277,6 +274,7 @@ static PyObject * py_vorbis_vorbis_encode_nosound(PyObject *self, PyObject *args
       count+=2;
     }
   }
+
   c_out = vorbis_analysis_wrote(vd,sampread);
   return Py_BuildValue("i", c_out);
 };
@@ -300,7 +298,7 @@ static PyObject * py_vorbis_vorbis_encode_wave_frames(PyObject *self, PyObject *
 		   &vb, &size2, 
 		   &readptr, &size3, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   vorbis_buffer=vorbis_analysis_buffer(vd,sampread);
   /* uninterleave samples */
   for(i=0;i<sampread;i++){
@@ -310,12 +308,10 @@ static PyObject * py_vorbis_vorbis_encode_wave_frames(PyObject *self, PyObject *
       count+=2;
     }
   }
+
   c_out = vorbis_analysis_wrote(vd,sampread);
   return Py_BuildValue("i", c_out);
 };
-
-
-
 
 
 static PyObject * py_vorbis_wave_frames_to_float(PyObject *self, PyObject *args) {
@@ -330,7 +326,7 @@ static PyObject * py_vorbis_wave_frames_to_float(PyObject *self, PyObject *args)
   PyObject *items;
   PyArg_ParseTuple(args, "s#ii",  &readptr, &size, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   list = PyList_New(sampread);
   for(i=0;i<sampread;i++){
     items = PyList_New(audio_ch);
@@ -341,6 +337,7 @@ static PyObject * py_vorbis_wave_frames_to_float(PyObject *self, PyObject *args)
     }
     PyList_SetItem(list, i, items);
   }
+
   return list;
 };
 
@@ -357,7 +354,7 @@ static PyObject * py_vorbis_wave_frames_to_int(PyObject *self, PyObject *args) {
   PyObject *items;
   PyArg_ParseTuple(args, "s#ii",  &readptr, &size, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   list = PyList_New(sampread);
   for(i=0;i<sampread;i++){
     items = PyList_New(audio_ch);
@@ -368,6 +365,7 @@ static PyObject * py_vorbis_wave_frames_to_int(PyObject *self, PyObject *args) {
     }
     PyList_SetItem(list, i, items);
   }
+
   return list;
 };
 
@@ -390,7 +388,7 @@ static PyObject * py_vorbis_vorbis_encode_int_values(PyObject *self, PyObject *a
 		   &vb, &size2, 
 		   &list, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   vorbis_buffer=vorbis_analysis_buffer(vd,sampread);
   /* uninterleave samples */
   for(i=0;i<sampread;i++){
@@ -405,6 +403,7 @@ static PyObject * py_vorbis_vorbis_encode_int_values(PyObject *self, PyObject *a
     }
     Py_DECREF(item1);
   }
+
   c_out = vorbis_analysis_wrote(vd,sampread);
   return Py_BuildValue("i", c_out);
 };
@@ -428,7 +427,7 @@ static PyObject * py_vorbis_vorbis_encode_float_values(PyObject *self, PyObject 
 		   &vb, &size2, 
 		   &list, 
 		   &sampread, &audio_ch);
-  /////////////////////////////////////////////////////////////////
+
   vorbis_buffer=vorbis_analysis_buffer(vd,sampread);
   /* uninterleave samples */
   for(i=0;i<sampread;i++){
@@ -443,6 +442,7 @@ static PyObject * py_vorbis_vorbis_encode_float_values(PyObject *self, PyObject 
     }
     Py_DECREF(item1);
   }
+
   c_out = vorbis_analysis_wrote(vd,sampread);
   return Py_BuildValue("i", c_out);
 };
@@ -464,7 +464,7 @@ static PyObject * py_vorbis_list_to_wave(PyObject *self, PyObject *args) {
 		   &sampread, &audio_ch);
   size = sampread*audio_ch*2;
   readptr = PyMem_New(signed char, size);
-  /////////////////////////////////////////////////////////////////
+
   /* uninterleave samples */
   for(i=0;i<sampread;i++){
     item1 = PyList_GetItem(list, i);
@@ -479,6 +479,7 @@ static PyObject * py_vorbis_list_to_wave(PyObject *self, PyObject *args) {
     }
     Py_DECREF(item1);
   }
+
   //      vorbis_buffer[j][i]=((readptr[count+1]<<8)|
   //                           (0x00ff&(int)readptr[count]))/32768.f;
   res = Py_BuildValue("s#", readptr, size);
@@ -590,7 +591,7 @@ static PyMethodDef PyVorbisMethods[] = {
   {"vorbis_dsp_clear", py_vorbis_vorbis_dsp_clear, METH_VARARGS,
    "Frees the internal storage for a vorbis_dsp_state structure"},
   {"vorbis_comment_clear", py_vorbis_vorbis_comment_clear, METH_VARARGS,
-  "Frees the internal storage associated with a vorbis_comment structure"},
+   "Frees the internal storage associated with a vorbis_comment structure"},
   {NULL, NULL, 0, NULL}
 };
 
