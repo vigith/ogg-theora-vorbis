@@ -59,7 +59,9 @@ class DecodeTheora:
 		self.ret5 = ogg_stream_packetout(self.stream, self.packet)
 		while self.ret5 == 0:
 			## readPage is from Ogg Lib (indirectly)
-			if not self.readPage(): 
+			## read_page() returns '0' during normal case
+			## and undef when EOF (bytes read == 0)
+			if self.readPage() == None:
 				print "PAGE END"
 				return None
 			# ogg_stream_pagein:

@@ -22,13 +22,13 @@ static PyObject * py_ogg_read_page(PyObject *self, PyObject *args) {
     char* buffer = ogg_sync_buffer(state, 4096);
     bytes = read(fd, buffer, 4096);
     if (bytes == 0) {
-      printf("ERROR End of file\n");
       Py_INCREF(Py_None);
       return Py_None;
     }
     ret = ogg_sync_wrote(state, bytes);
   }
-  res = Py_BuildValue("i", 1);
+  // let it return whether we had a buffer overflow
+  res = Py_BuildValue("i", ret);
   return res;
 };
 
