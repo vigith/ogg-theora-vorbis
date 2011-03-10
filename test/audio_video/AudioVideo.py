@@ -13,9 +13,9 @@ import random
 import wave
 import Image as IKI
 
-from CuOgg import *
-from CuVorbis import *
-from CuTheora import *
+from PyExOgg import *
+from PyExVorbis import *
+from PyExTheora import *
 
 class WaveData:
 	def __init__(self, wave_file):

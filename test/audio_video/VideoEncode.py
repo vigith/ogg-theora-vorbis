@@ -2,8 +2,8 @@ import sys
 import Image as IM
 #sys.path.append("/home/ik/ogg/ogg/build/lib.linux-i686-2.6")
 ################################################################
-from CuOgg import *
-from CuTheora import *
+from PyExOgg import *
+from PyExTheora import *
 
 
 class VideoEncode:
