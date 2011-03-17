@@ -5,6 +5,10 @@
 #include <theora/theoraenc.h>
 #include <ogg/ogg.h>
 
+/* TODO:
+ * we should not manipulate th_comment structure directly,
+ * use th_comment_add and th_comment_add_tag
+ */
 static PyObject * py_theora_make_th_comment(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
@@ -230,6 +234,8 @@ static PyObject * py_theora_make_theora_state(PyObject *self, PyObject *args) {
   return res;
 };
 
+/* TODO: Rename yuv_buffer to th_ycbcr_buffer
+ */
 static PyObject * py_theora_make_yuv_buffer(PyObject *self, PyObject *args) {
   PyObject *res;
   int size;
