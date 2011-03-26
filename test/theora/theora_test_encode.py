@@ -80,6 +80,9 @@ class EncodeTheora:
 			body = page_body(self.page)
 			self.fd.write(header)
 			self.fd.write(body)
+		else:
+			## it is OK to skip this error
+			pass
 		return
 
 	def addImageFrame(self, img):
@@ -96,7 +99,7 @@ class EncodeTheora:
 		return n
 
 	def readImage(self, filename = "aaa.jpg"):
-		img = IM.open(filename)
+		img = IM.open(filename)	
 		return img
 
 	def addImages(self, filename, no = 1):
