@@ -38,6 +38,7 @@ static PyObject * py_theora_print_th_comment(PyObject *self, PyObject *args) {
   th_comment * comments;
   PyArg_ParseTuple(args, "s#", &comments, &size);
   for(i=0; i < comments->comments; ++i) {
+    printf("Comments[%d] : [%s]\n", i, comments->user_comments[i]);
   }
   Py_INCREF(Py_None);
   return Py_None;
