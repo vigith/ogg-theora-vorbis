@@ -24,8 +24,8 @@ class DecodeTheora:
 		self.ret4 = ogg_stream_pagein(self.stream, self.page)
 
 		self.theoraInfo = make_th_info()
-		self.mComment   = make_th_comment()
 		th_info_init(self.theoraInfo)
+		self.mComment   = make_th_comment()		
 		th_comment_init(self.mComment)
 		self.setupInfo_addr = 0
 
@@ -116,7 +116,7 @@ class DecodeTheora:
 		while not ret == 'VIDEO':
 			ret, self.setupInfo_addr = th_decode_headerin(self.theoraInfo, 
 					self.mComment, self.setupInfo_addr, self.packet)
-
+			
 			if not ret == 'VIDEO':
 				val = self.readPacket()
 		return
@@ -138,7 +138,7 @@ class DecodeTheora:
 
 		# creates a python memory 
 		# PyMem_New(unsigned char, sizeof(th_ycbcr_buffer))
-		self.buff = make_yuv_buffer(w*h*2)
+		self.buff = make_yuv_buffer(w*h*2)  ## ycbcr_buffer
 
 		# th_decode_packetin(self.dec, self.packet, self.gpos)
 		# Submits a packet containing encoded video data to the decoder.
@@ -179,11 +179,12 @@ class DecodeTheora:
 	def endVideo(self):
 		# Frees an allocated decoder instance. 
 		th_decode_free(self.dec)
+		## ogg_packet_clear(self.packet) (malloc error as expected, freed by codecs)
 		return
 
 	def saveImage(self, name = "frame.png"):
 		w,h = self.getSize()
-		img = IM.fromstring('RGB', [w, h], self.rgb)
+		img = IM.fromstring('RGB', [w, h], self.rgb)	
 		img.save(name)
 
 if __name__ == '__main__':
@@ -200,6 +201,7 @@ if __name__ == '__main__':
 			if val == 'ok':
 				buff = ogg.rgbBuffer()
 				ogg.saveImage("frame%03d.png" % (i))
+			## val == None will be set by the ReadPage (if you follow the stack trace)
 			elif val == None:
 				break
 		print get_th_info(ogg.theoraInfo)
